@@ -29,24 +29,28 @@
     --np-radius-input: 8px;
     --np-radius-btn: 8px;
 
+    // Elevation shadows
+    --np-shadow-sm: 0 1px 2px rgba(47, 38, 48, 0.04);
+    --np-shadow-md: 0 8px 24px rgba(47, 38, 48, 0.06);
+
     // Typography
     --np-font: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
         sans-serif;
+}
 
+.o_nakivo_reseller_portal {
     // Bootstrap 5 CSS variable overrides (applied inside our scope via cascade)
     --bs-primary: #714b67;
     --bs-primary-rgb: 113, 75, 103;
     --bs-border-color: var(--np-border);
-}
 
-.o_nakivo_reseller_portal {
     font-family: var(--np-font);
 
     // Card surfaces
     .card {
         border-radius: var(--np-radius-card);
         border: 1px solid var(--np-border);
-        box-shadow: 0 1px 2px rgba(47, 38, 48, 0.04);
+        box-shadow: var(--np-shadow-sm);
     }
 
     // Primary button uses brand color
@@ -72,13 +76,13 @@
         border-radius: var(--np-radius-card);
         border: 1px solid var(--np-border);
         background: var(--np-surface);
-        box-shadow: 0 1px 2px rgba(47, 38, 48, 0.04);
+        box-shadow: var(--np-shadow-sm);
         transition:
             transform 0.15s ease,
             box-shadow 0.15s ease;
 
         &:hover {
-            box-shadow: 0 8px 24px rgba(47, 38, 48, 0.06);
+            box-shadow: var(--np-shadow-md);
             transform: translateY(-1px);
         }
     }
@@ -86,9 +90,9 @@
     // Loading and empty state surfaces
     .o_nakivo_reseller_portal_loading,
     .o_nakivo_reseller_portal_empty {
-        border: 1px dashed rgba(108, 117, 125, 0.35);
-        border-radius: 1rem;
-        background: rgba(248, 249, 250, 0.7);
+        border: 1px dashed var(--np-border);
+        border-radius: var(--np-radius-card);
+        background: var(--np-surface-alt);
     }
 
     // Form input sizing and radius
