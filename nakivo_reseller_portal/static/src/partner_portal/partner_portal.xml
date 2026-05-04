@@ -156,6 +156,7 @@
                                                                 <button
                                                                     type="button"
                                                                     class="btn btn-outline-secondary btn-sm"
+                                                                    t-att-disabled="state.deletingId === record.id"
                                                                     t-on-click="cancelDelete"
                                                                 >Cancel</button>
                                                             </div>
