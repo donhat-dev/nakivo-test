@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="nakivo_reseller_portal.DashboardTabBar">
+        <div class="d-flex flex-wrap gap-2 mb-4">
+            <t t-foreach="props.tabs" t-as="tab" t-key="tab.id">
+                <button
+                    type="button"
+                    t-att-class="tabClass(tab.id)"
+                    t-att-data-tab="tab.id"
+                    t-on-click="onClickTab"
+                >
+                    <span class="me-2"><t t-esc="tab.label"/></span>
+                    <span class="badge rounded-pill text-bg-light"><t t-esc="tab.count"/></span>
+                </button>
+            </t>
+        </div>
+    </t>
+</templates>

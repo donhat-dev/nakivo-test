@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="nakivo_reseller_portal.OpportunityForm">
+        <form class="o_nakivo_reseller_portal_form" t-on-submit.prevent="createOpportunity">
+            <div t-if="state.error" class="alert alert-danger mb-3" role="alert">
+                <t t-esc="state.error"/>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="reseller_opportunity_name">Opportunity name</label>
+                <input
+                    id="reseller_opportunity_name"
+                    class="form-control"
+                    type="text"
+                    required="required"
+                    t-model="state.name"
+                />
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="reseller_partner_id">Customer</label>
+                <select
+                    id="reseller_partner_id"
+                    class="form-select"
+                    t-model="state.partner_id"
+                >
+                    <option value="">Select a customer</option>
+                    <t t-foreach="props.customers" t-as="customer" t-key="customer.id">
+                        <option t-att-value="customer.id">
+                            <t t-esc="customer.name"/>
+                        </option>
+                    </t>
+                </select>
+                <p t-if="!hasCustomers" class="form-text mb-0">
+                    Customer options appear after customer records are linked to this reseller.
+                </p>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="reseller_expected_revenue">Expected revenue</label>
+                <input
+                    id="reseller_expected_revenue"
+                    class="form-control"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    t-model="state.expected_revenue"
+                />
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="reseller_description">Description</label>
+                <textarea
+                    id="reseller_description"
+                    class="form-control"
+                    rows="4"
+                    t-model="state.description"
+                />
+            </div>
+            <button
+                class="btn btn-primary w-100"
+                type="submit"
+                t-att-disabled="state.submitting"
+            >
+                <t t-if="state.submitting">Creating...</t>
+                <t t-else="">Create opportunity</t>
+            </button>
+        </form>
+    </t>
+</templates>
