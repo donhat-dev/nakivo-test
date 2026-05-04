@@ -15,59 +15,71 @@
             </t>
 
             <t t-else="">
-                <!-- Stat cards -->
-                <div class="row g-3 mb-4">
+                <!-- Stat cards (4 cards: 2/row on sm, 4/row on xl) -->
+                <div class="row g-3 mb-4 np-stat-row">
                     <t t-foreach="props.stats" t-as="stat" t-key="stat.id">
-                        <div class="col-12 col-md-6">
-                            <div class="card h-100">
-                                <div class="card-body px-4 pt-4 pb-3">
-                                    <div class="text-muted small mb-2">
-                                        <t t-esc="stat.label"/>
+                        <div class="col-12 col-sm-6 col-xl-3">
+                            <div class="card h-100 np-stat-card">
+                                <div class="card-body px-4 pt-4 pb-3 d-flex flex-column">
+                                    <div class="d-flex align-items-start justify-content-between mb-4">
+                                        <span class="text-muted small fw-medium">
+                                            <t t-esc="stat.label"/>
+                                        </span>
+                                        <i t-if="stat.iconClass" t-att-class="'np-stat-icon fa fa-fw ' + stat.iconClass"/>
                                     </div>
-                                    <div class="np-stat-value">
+                                    <div class="np-stat-value mt-auto">
                                         <t t-esc="stat.value"/>
                                     </div>
-                                </div>
-                                <div class="card-footer bg-transparent border-top d-flex align-items-center gap-1 py-2 px-4">
-                                    <span class="text-muted small">
-                                        <t t-if="props.lastUpdated">
-                                            Last updated at <t t-esc="props.lastUpdated"/>
-                                        </t>
-                                    </span>
-                                    <button
-                                        type="button"
-                                        class="btn btn-sm btn-link p-0 ms-1 lh-1"
-                                        t-on-click="props.onRefresh"
-                                        title="Refresh"
-                                        aria-label="Refresh"
-                                    ><i class="fa fa-refresh"/></button>
+                                    <p t-if="stat.subtitle" class="text-muted small mt-1 mb-0">
+                                        <t t-esc="stat.subtitle"/>
+                                    </p>
                                 </div>
                             </div>
                         </div>
                     </t>
                 </div>
 
-                <!-- Navigation shortcut cards -->
-                <div class="row g-3">
-                    <t t-foreach="props.cards" t-as="card" t-key="card.id">
-                        <div class="col-12 col-sm-6 col-xl-4">
-                            <button
-                                type="button"
-                                class="card np-nav-card h-100 w-100 text-start bg-white"
-                                t-att-data-section="card.sectionId"
-                                t-on-click="onCardClick"
-                            >
-                                <div class="card-body d-flex align-items-center gap-3 py-3">
-                                    <div
-                                        class="np-nav-card-icon d-inline-flex align-items-center justify-content-center rounded flex-shrink-0 bg-light text-primary"
-                                    >
-                                        <i t-if="card.iconClass" t-att-class="'fa fa-fw ' + card.iconClass"/>
-                                    </div>
-                                    <span class="fw-semibold"><t t-esc="card.label"/></span>
-                                </div>
-                            </button>
+                <!-- Chart section (2 charts side by side) -->
+                <div class="row g-3 mb-4">
+                    <t t-foreach="props.charts" t-as="chart" t-key="chart.id">
+                        <div t-att-class="chartColClass(chart)">
+                            <DashboardChart
+                                title="chart.title"
+                                subtitle="chart.subtitle"
+                                chartType="chart.chartType"
+                                labels="chart.labels"
+                                datasets="chart.datasets"
+                                loading="props.loading"
+                                size="chart.size || 'md'"
+                            />
                         </div>
                     </t>
+                </div>
+
+                <!-- Navigation shortcut cards -->
+                <div class="np-cards-section">
+                    <h6 class="fw-semibold text-muted mb-3 small text-uppercase">Quick Access</h6>
+                    <div class="row g-3">
+                        <t t-foreach="props.cards" t-as="card" t-key="card.id">
+                            <div class="col-12 col-sm-6 col-xl-4">
+                                <button
+                                    type="button"
+                                    class="card np-nav-card h-100 w-100 text-start bg-white"
+                                    t-att-data-section="card.sectionId"
+                                    t-on-click="onCardClick"
+                                >
+                                    <div class="card-body d-flex align-items-center gap-3 py-3">
+                                        <div
+                                            class="np-nav-card-icon d-inline-flex align-items-center justify-content-center rounded flex-shrink-0 bg-light text-primary"
+                                        >
+                                            <i t-if="card.iconClass" t-att-class="'fa fa-fw ' + card.iconClass"/>
+                                        </div>
+                                        <span class="fw-semibold"><t t-esc="card.label"/></span>
+                                    </div>
+                                </button>
+                            </div>
+                        </t>
+                    </div>
                 </div>
             </t>
         </div>

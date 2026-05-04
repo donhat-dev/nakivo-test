@@ -1,19 +1,52 @@
 :root {
-    --np-primary: #714b67;
-    --np-primary-hover: #5e3f56;
-    --np-primary-soft: #f1eaee;
-    --np-bg: #f8f6f8;
+    --np-primary: #4f46e5;
+    --np-primary-hover: #4338ca;
+    --np-primary-soft: #eef2ff;
+    --np-bg: #f9fafb;
     --np-surface: #ffffff;
-    --np-text: #2f2630;
-    --np-muted: #6f6470;
-    --np-border: #e8dee6;
+    --np-text: #111827;
+    --np-muted: #6b7280;
+    --np-border: #e5e7eb;
     --np-font: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
         sans-serif;
 }
 
+// Expand the portal_layout .container to container-xxl for the reseller SPA
+.o_portal_wrap:has(.o_nakivo_reseller_portal) > .container {
+    max-width: 100%;
+}
+
+// Chart canvas fills the card body
+.np-chart-area {
+    min-height: 280px; // md default
+
+    &.np-chart-area--sm {
+        min-height: 180px;
+    }
+
+    &.np-chart-area--xl {
+        min-height: 400px;
+    }
+
+    canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100% !important;
+        height: 100% !important;
+    }
+}
+
+// Quick Access cards section — large top gap
+.np-cards-section {
+    margin-top: 2.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--np-border);
+}
+
 .o_nakivo_reseller_portal {
     --bs-primary: var(--np-primary);
-    --bs-primary-rgb: 113, 75, 103;
+    --bs-primary-rgb: 79, 70, 229;
     --bs-border-color: var(--np-border);
     --bs-link-color: var(--np-primary);
     --bs-link-hover-color: var(--np-primary-hover);
@@ -45,13 +78,70 @@
 }
 
 .np-sidebar {
-    max-height: none;
+    overflow-x: hidden;
+    transition: width 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.np-sidebar--collapsed {
+    width: 3.5rem !important;
+
+    .np-sidebar-user-info {
+        display: none;
+    }
+
+    .np-sidebar-item-label,
+    .np-sidebar-item-badge,
+    .np-sidebar-group-chevron {
+        display: none;
+    }
+
+    .np-sidebar-header {
+        justify-content: center;
+    }
+
+    .np-sidebar-item {
+        justify-content: center;
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+
+    .np-sidebar-collapse-btn .fa::before {
+        content: "\f101"; // fa-angle-double-right
+    }
+}
+
+.np-sidebar-logo {
+    background: var(--np-primary);
+}
+
+.np-sidebar-collapse-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0;
+    border: 1px solid var(--np-border);
+    border-radius: 50%;
+    background: var(--np-surface);
+    color: var(--np-muted);
+    cursor: pointer;
+    transition:
+        background 0.15s,
+        color 0.15s,
+        border-color 0.15s;
+
+    &:hover {
+        background: var(--np-primary-soft);
+        border-color: var(--np-primary);
+        color: var(--np-primary);
+    }
 }
 
 .np-sidebar-logo {
     width: 2rem;
     height: 2rem;
-    background: var(--np-primary);
 }
 
 .np-sidebar-item {
@@ -66,8 +156,9 @@
 
 .np-sidebar-item-active {
     background: var(--np-primary-soft);
-    border-left: 0.25rem solid var(--np-primary) !important;
+    border-left: 3px solid var(--np-primary) !important;
     color: var(--np-primary);
+    font-weight: 600;
 }
 
 .np-sidebar-chevron-open {
@@ -75,10 +166,44 @@
 }
 
 .np-stat-value {
-    color: var(--np-text);
-    font-size: 2.25rem;
+    color: var(--np-primary);
+    font-size: 2.55rem;
     font-weight: 700;
     line-height: 1.1;
+}
+
+.np-stat-icon {
+    font-size: 1.4rem;
+    opacity: 0.85;
+}
+
+// Per-card accent colours (top border + icon tint)
+.np-stat-row > div:nth-child(1) .np-stat-card {
+    --np-stat-accent: #4f46e5;
+}
+
+.np-stat-row > div:nth-child(2) .np-stat-card {
+    --np-stat-accent: #0ea5e9;
+}
+
+.np-stat-row > div:nth-child(3) .np-stat-card {
+    --np-stat-accent: #10b981;
+}
+
+.np-stat-row > div:nth-child(4) .np-stat-card {
+    --np-stat-accent: #f59e0b;
+}
+
+.np-stat-card {
+    border-top: 3px solid var(--np-stat-accent, var(--np-primary)) !important;
+
+    .np-stat-value {
+        color: var(--np-stat-accent, var(--np-primary));
+    }
+
+    .np-stat-icon {
+        color: var(--np-stat-accent, var(--np-primary));
+    }
 }
 
 .np-nav-card {
@@ -96,6 +221,8 @@
 .np-nav-card-icon {
     width: 2.5rem;
     height: 2.5rem;
+    background: var(--np-primary-soft) !important;
+    color: var(--np-primary) !important;
 }
 
 .np-status-badge {
@@ -113,7 +240,7 @@
 
 @media (min-width: 992px) {
     .np-sidebar {
-        width: 16rem;
+        width: 14rem;
         max-height: 100vh;
         position: sticky;
         top: 0;

@@ -9,6 +9,8 @@ export class AppSidebar extends Component {
         activeSection: String,
         userName: String,
         onNavigate: Function,
+        collapsed: { type: Boolean, optional: true },
+        onToggleSidebar: Function,
     };
 
     setup() {

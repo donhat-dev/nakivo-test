@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
     <t t-name="nakivo_reseller_portal.AppSidebar">
-        <aside class="np-sidebar flex-shrink-0 bg-white border-end overflow-auto">
-            <div class="d-flex align-items-center gap-2 p-3 border-bottom">
+        <aside t-att-class="'np-sidebar flex-shrink-0 bg-white border-end' + (props.collapsed ? ' np-sidebar--collapsed' : '')">
+            <div class="np-sidebar-header d-flex align-items-center gap-2 p-3 border-bottom">
                 <div class="np-sidebar-logo d-inline-flex align-items-center justify-content-center rounded text-white flex-shrink-0">
                     <i class="fa fa-user"/>
                 </div>
-                <div class="min-w-0">
+                <div class="np-sidebar-user-info min-w-0 flex-grow-1">
                     <div class="fw-bold lh-sm text-truncate"><t t-esc="props.userName"/></div>
                     <div class="small text-muted fw-semibold text-uppercase">RESELLERS</div>
                 </div>
+                <button type="button" class="np-sidebar-collapse-btn border-0" t-on-click="props.onToggleSidebar">
+                    <i t-att-class="'fa fa-sm ' + (props.collapsed ? 'fa-angle-double-right' : 'fa-angle-double-left')"/>
+                </button>
             </div>
 
             <nav class="list-group list-group-flush py-2">
@@ -27,7 +30,7 @@
                                 <i t-if="section.iconClass" t-att-class="'fa fa-fw text-muted ' + section.iconClass"/>
                                 <span class="text-truncate"><t t-esc="section.label"/></span>
                             </span>
-                            <i t-att-class="'fa fa-angle-right flex-shrink-0' + (isExpanded(section.id) ? ' np-sidebar-chevron-open' : '')"/>
+                            <i t-att-class="'np-sidebar-group-chevron fa fa-angle-right flex-shrink-0' + (isExpanded(section.id) ? ' np-sidebar-chevron-open' : '')"/>
                         </button>
                         <div t-if="isExpanded(section.id)">
                             <t t-foreach="section.children" t-as="child" t-key="child.id">
@@ -38,10 +41,10 @@
                                     t-on-click="onNavClick"
                                 >
                                     <span class="d-flex align-items-center gap-2 min-w-0 flex-grow-1 overflow-hidden">
-                                        <span class="text-truncate"><t t-esc="child.label"/></span>
+                                        <span class="np-sidebar-item-label text-truncate"><t t-esc="child.label"/></span>
                                     </span>
                                     <t t-if="child.count !== undefined and child.count !== null">
-                                        <span class="badge rounded-pill text-bg-light flex-shrink-0"><t t-esc="child.count"/></span>
+                                            <span class="np-sidebar-item-badge badge rounded-pill text-bg-light flex-shrink-0"><t t-esc="child.count"/></span>
                                     </t>
                                 </button>
                             </t>
@@ -58,10 +61,10 @@
                         >
                             <span class="d-flex align-items-center gap-2 min-w-0 flex-grow-1 overflow-hidden">
                                 <i t-if="section.iconClass" t-att-class="'fa fa-fw text-muted ' + section.iconClass"/>
-                                <span class="text-truncate"><t t-esc="section.label"/></span>
+                                <span class="np-sidebar-item-label text-truncate"><t t-esc="section.label"/></span>
                             </span>
                             <t t-if="section.count !== undefined and section.count !== null">
-                                <span class="badge rounded-pill text-bg-light flex-shrink-0"><t t-esc="section.count"/></span>
+                                <span class="np-sidebar-item-badge badge rounded-pill text-bg-light flex-shrink-0"><t t-esc="section.count"/></span>
                             </t>
                         </button>
                     </t>

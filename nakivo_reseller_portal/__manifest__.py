@@ -30,6 +30,8 @@
             "nakivo_reseller_portal/static/src/partner_portal/partner_portal.scss",
             "nakivo_reseller_portal/static/src/partner_portal/components/app_sidebar.js",
             "nakivo_reseller_portal/static/src/partner_portal/components/app_sidebar.xml",
+            "nakivo_reseller_portal/static/src/partner_portal/components/dashboard_chart.js",
+            "nakivo_reseller_portal/static/src/partner_portal/components/dashboard_chart.xml",
             "nakivo_reseller_portal/static/src/partner_portal/components/dashboard_view.js",
             "nakivo_reseller_portal/static/src/partner_portal/components/dashboard_view.xml",
             "nakivo_reseller_portal/static/src/partner_portal/components/delete_button.js",

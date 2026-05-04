@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="nakivo_reseller_portal.DashboardChart">
+        <div class="card h-100">
+            <div class="card-body d-flex flex-column">
+                <div class="mb-3">
+                    <h6 class="fw-semibold mb-0"><t t-esc="props.title"/></h6>
+                    <p t-if="props.subtitle" class="text-muted small mb-0">
+                        <t t-esc="props.subtitle"/>
+                    </p>
+                </div>
+
+                <div t-att-class="'position-relative flex-grow-1 np-chart-area ' + sizeClass">
+                    <t t-if="props.loading">
+                        <div class="d-flex align-items-center justify-content-center h-100 text-muted">
+                            <div class="spinner-border spinner-border-sm me-2" role="status"/>
+                            <span class="small">Loading…</span>
+                        </div>
+                    </t>
+                    <t t-elif="!props.labels.length">
+                        <div class="d-flex flex-column align-items-center justify-content-center h-100 text-muted gap-2">
+                            <i class="fa fa-bar-chart fa-2x opacity-50"/>
+                            <span class="small">No data available yet</span>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <canvas t-ref="canvas"/>
+                    </t>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

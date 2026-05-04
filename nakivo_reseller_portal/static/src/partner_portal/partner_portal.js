@@ -33,6 +33,7 @@ export class PartnerPortalRoot extends Component {
             lastUpdated: "",
             loading: true,
             showCreateModal: false,
+            sidebarCollapsed: false,
         });
 
         onWillStart(async () => {
@@ -168,27 +169,147 @@ export class PartnerPortalRoot extends Component {
 
     /** Summary stats shown at the top of the dashboard */
     get dashboardStats() {
-        const opps = this.state.dashboard.opportunities || [];
-        const totalRevenue = opps.reduce(
+        const d = this.state.dashboard;
+        const opps = d.opportunities || [];
+        const sos = d.sales_orders || [];
+        const invoices = d.invoices || [];
+
+        // Pipeline value: sum of expected_revenue across all open opportunities
+        const pipelineValue = opps.reduce(
             (sum, o) => sum + (o.expected_revenue || 0),
             0,
         );
-        const revenueLabel =
+
+        // Confirmed sales revenue: SOs returned by backend are already state='sale'|'done'
+        const confirmedSales = sos.reduce(
+            (sum, o) => sum + (o.amount_total || 0),
+            0,
+        );
+
+        // Unpaid invoices: posted invoices not yet fully paid or reversed
+        const unpaidAmount = invoices
+            .filter(
+                (inv) =>
+                    inv.state === "posted" &&
+                    inv.payment_state !== "paid" &&
+                    inv.payment_state !== "reversed",
+            )
+            .reduce((sum, inv) => sum + (inv.amount_total || 0), 0);
+
+        const fmt = (n) =>
             "$" +
-            totalRevenue.toLocaleString("en", {
+            n.toLocaleString("en", {
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 0,
             });
+
         return [
             {
                 id: "stat-opps",
                 label: _t("Total Opportunities"),
                 value: opps.length,
+                subtitle: _t("Assigned to you"),
+                iconClass: "fa-bullseye",
             },
             {
-                id: "stat-revenue",
-                label: _t("Total Revenue"),
-                value: revenueLabel,
+                id: "stat-pipeline",
+                label: _t("Pipeline Value"),
+                value: fmt(pipelineValue),
+                subtitle: _t("Expected revenue"),
+                iconClass: "fa-line-chart",
+            },
+            {
+                id: "stat-sales",
+                label: _t("Confirmed Sales"),
+                value: fmt(confirmedSales),
+                subtitle: _t("From confirmed orders"),
+                iconClass: "fa-check-circle",
+            },
+            {
+                id: "stat-unpaid",
+                label: _t("Unpaid Invoices"),
+                value: fmt(unpaidAmount),
+                subtitle: _t("Outstanding balance"),
+                iconClass: "fa-exclamation-circle",
+            },
+        ];
+    }
+
+    /** Chart data for the dashboard */
+    get dashboardCharts() {
+        const d = this.state.dashboard;
+        const sos = d.sales_orders || [];
+        const opps = d.opportunities || [];
+
+        // Bar chart: monthly confirmed sales revenue
+        const monthlyRevenue = {};
+        for (const so of sos) {
+            if (!so.date_order) continue;
+            const month = so.date_order.slice(0, 7); // "YYYY-MM"
+            monthlyRevenue[month] =
+                (monthlyRevenue[month] || 0) + (so.amount_total || 0);
+        }
+        const months = Object.keys(monthlyRevenue).sort();
+        const monthLabels = months.map((m) => {
+            const [year, mon] = m.split("-");
+            return new Date(Number(year), Number(mon) - 1).toLocaleString(
+                "en",
+                {
+                    month: "short",
+                    year: "2-digit",
+                },
+            );
+        });
+
+        // Doughnut chart: opportunities by stage
+        const stageCount = {};
+        for (const opp of opps) {
+            const stage = opp.stage_name || "Unknown";
+            stageCount[stage] = (stageCount[stage] || 0) + 1;
+        }
+        const stages = Object.keys(stageCount);
+        const donutPalette = [
+            "rgba(79, 70, 229, 0.85)",
+            "rgba(14, 165, 233, 0.85)",
+            "rgba(16, 185, 129, 0.85)",
+            "rgba(245, 158, 11, 0.85)",
+            "rgba(236, 72, 153, 0.85)",
+            "rgba(139, 92, 246, 0.85)",
+        ];
+
+        return [
+            {
+                id: "chart-monthly-sales",
+                title: _t("Monthly Sales Revenue"),
+                subtitle: _t("Confirmed orders by month"),
+                chartType: "bar",
+                size: "xl",
+                labels: monthLabels,
+                datasets: [
+                    {
+                        label: _t("Revenue"),
+                        data: months.map((m) => monthlyRevenue[m]),
+                        backgroundColor: "rgba(79, 70, 229, 0.75)",
+                        borderColor: "rgba(79, 70, 229, 1)",
+                        borderWidth: 1,
+                        borderRadius: 4,
+                    },
+                ],
+            },
+            {
+                id: "chart-opp-stages",
+                title: _t("Opportunities by Stage"),
+                subtitle: _t("Distribution of your current pipeline"),
+                chartType: "doughnut",
+                size: "sm",
+                labels: stages,
+                datasets: [
+                    {
+                        data: stages.map((s) => stageCount[s]),
+                        backgroundColor: donutPalette,
+                        borderWidth: 1,
+                    },
+                ],
             },
         ];
     }
@@ -382,6 +503,10 @@ export class PartnerPortalRoot extends Component {
 
     onNavigate(sectionId) {
         this.state.activeSection = sectionId;
+    }
+
+    onToggleSidebar() {
+        this.state.sidebarCollapsed = !this.state.sidebarCollapsed;
     }
 
     async onRefreshDashboard() {

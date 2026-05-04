@@ -1,4 +1,4 @@
-# Nakivo Test — Partner Reseller Portal for Odoo 19
+# Partner Reseller Portal for Odoo 19
 
 Authenticated reseller portal built on **Odoo 19 Community Edition** with an Odoo-native stack:
 
@@ -18,6 +18,20 @@ Authenticated reseller portal built on Odoo 19 Community Edition with an Odoo-na
 - Authenticated JSON endpoints to list, create, and delete reseller-owned opportunities
 - Backend-enforced data isolation — scope is derived from the session, never from client payloads
 - `nakivo_base_rest` — reusable REST primitives (Pydantic validation, error envelopes, exception mapping) decoupled from reseller-specific logic
+
+## SCREENSHOTS
+
+### Dashboard overview
+
+![Dashboard overview](nakivo_reseller_portal/static/description/screenshot_1.png)
+
+### Opportunities list
+
+![Opportunities list](nakivo_reseller_portal/static/description/screenshot_2.png)
+
+### Create opportunity modal
+
+![Create opportunity modal](nakivo_reseller_portal/static/description/screenshot_3.png)
 
 ## Design decisions
 

@@ -48,6 +48,13 @@ class PartnerResellerPortalController(CustomerPortal, BaseRestHandler):
     # Portal home integration (Gap 1)
     # -------------------------------------------------------------------------
 
+    @route(["/my", "/my/home"], type="http", auth="user", website=True)
+    def home(self, **kw):
+        user = request.env.user
+        if user.has_group(RESELLER_PORTAL_GROUP_XML_ID) and user.partner_id:
+            return request.redirect(PORTAL_PAGE_ROUTE)
+        return super().home(**kw)
+
     def _prepare_home_portal_values(self, counters):
         values = super()._prepare_home_portal_values(counters)
         if "reseller_portal_count" in counters and request.env.user.has_group(

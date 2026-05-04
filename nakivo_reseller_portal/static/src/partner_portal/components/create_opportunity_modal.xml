@@ -83,7 +83,7 @@
                         <div class="modal-footer flex-column-reverse flex-sm-row">
                             <button
                                 type="button"
-                                class="btn btn-outline-secondary"
+                                class="btn btn-light"
                                 t-att-disabled="state.submitting"
                                 t-on-click="onClose"
                             >Cancel</button>
