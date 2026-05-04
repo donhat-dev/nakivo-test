@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="nakivo_reseller_portal.DeleteButton">
+        <span class="d-inline-flex align-items-center gap-1">
+            <t t-if="!state.confirming">
+                <button
+                    type="button"
+                    class="btn btn-link text-danger p-2 lh-1"
+                    t-on-click="onTrashClick"
+                    aria-label="Delete"
+                    title="Delete"
+                ><i class="fa fa-trash"/></button>
+            </t>
+            <t t-elif="state.deleting">
+                <span class="spinner-border spinner-border-sm text-danger" role="status"
+                      aria-label="Deleting"/>
+            </t>
+            <t t-else="">
+                <button
+                    type="button"
+                    class="btn btn-sm btn-danger"
+                    t-on-click="onConfirmDelete"
+                >Confirm</button>
+                <button
+                    type="button"
+                    class="btn btn-sm btn-outline-secondary"
+                    t-on-click="onCancelConfirm"
+                >Cancel</button>
+            </t>
+        </span>
+    </t>
+</templates>

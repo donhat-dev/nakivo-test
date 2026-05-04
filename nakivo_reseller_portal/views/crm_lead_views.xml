@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- crm.lead form extension: adds reseller_partner_id before the notebook -->
+    <record id="view_crm_lead_form_reseller" model="ir.ui.view">
+        <field name="name">crm.lead.form.reseller</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="before">
+                <group>
+                    <field
+                        name="reseller_partner_id"
+                        options="{'no_create': True}"
+                        groups="base.group_user"
+                    />
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

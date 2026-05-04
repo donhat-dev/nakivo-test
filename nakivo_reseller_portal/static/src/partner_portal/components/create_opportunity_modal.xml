@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="nakivo_reseller_portal.CreateOpportunityModal">
+        <!-- Backdrop -->
+        <div class="modal-backdrop fade show" style="z-index:1050" t-on-click="onBackdropClick"/>
+
+        <!-- Modal -->
+        <div class="modal d-block" tabindex="-1" role="dialog" aria-modal="true"
+             aria-labelledby="np-opp-modal-title" style="z-index:1055">
+            <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down" t-on-click.stop="">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 id="np-opp-modal-title" class="modal-title fw-bold">
+                            Create New Opportunity
+                        </h5>
+                        <button type="button" class="btn-close" t-on-click="onClose" aria-label="Close"/>
+                    </div>
+
+                    <form t-on-submit="onSubmit">
+                        <div class="modal-body">
+                            <div t-if="state.error" class="alert alert-danger small py-2 px-3 mb-3">
+                                <t t-esc="state.error"/>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold small mb-1" for="np-opp-name">
+                                    Opportunity Name <span class="text-danger">*</span>
+                                </label>
+                                <input
+                                    id="np-opp-name"
+                                    class="form-control"
+                                    type="text"
+                                    required="required"
+                                    t-model="state.name"
+                                    placeholder="e.g. NAKIVO Backup License"
+                                />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold small mb-1" for="np-opp-customer">
+                                    Customer
+                                </label>
+                                <select id="np-opp-customer" class="form-select" t-model="state.partner_id">
+                                    <option value="">Select a customer</option>
+                                    <t t-foreach="props.customers" t-as="customer" t-key="customer.id">
+                                        <option t-att-value="customer.id">
+                                            <t t-esc="customer.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                                <p t-if="!hasCustomers" class="form-text text-muted mt-1 small">
+                                    Customer options appear once records are linked to this reseller.
+                                </p>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-12 col-sm-6">
+                                    <label class="form-label fw-semibold small mb-1" for="np-opp-email">Email</label>
+                                    <input id="np-opp-email" class="form-control" type="email" t-model="state.email"/>
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <label class="form-label fw-semibold small mb-1" for="np-opp-phone">Phone</label>
+                                    <input id="np-opp-phone" class="form-control" type="tel" t-model="state.phone"/>
+                                </div>
+                            </div>
+
+                            <div class="mb-1">
+                                <label class="form-label fw-semibold small mb-1" for="np-opp-revenue">
+                                    Expected Revenue
+                                </label>
+                                <input
+                                    id="np-opp-revenue"
+                                    class="form-control"
+                                    type="number"
+                                    min="0"
+                                    step="0.01"
+                                    t-model="state.expected_revenue"
+                                />
+                            </div>
+                        </div>
+
+                        <div class="modal-footer flex-column-reverse flex-sm-row">
+                            <button
+                                type="button"
+                                class="btn btn-outline-secondary"
+                                t-att-disabled="state.submitting"
+                                t-on-click="onClose"
+                            >Cancel</button>
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                                t-att-disabled="state.submitting"
+                            >
+                                <t t-if="state.submitting">Adding…</t>
+                                <t t-else="">Add</t>
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

@@ -1,106 +1,119 @@
 :root {
-    // Brand colors — from DESIGN.md
     --np-primary: #714b67;
     --np-primary-hover: #5e3f56;
     --np-primary-soft: #f1eaee;
-    --np-accent: #00a09d;
-    --np-accent-hover: #008784;
-    --np-accent-soft: #e5f7f6;
-
-    // Surfaces
     --np-bg: #f8f6f8;
     --np-surface: #ffffff;
-    --np-surface-alt: #f4eff3;
-
-    // Text
     --np-text: #2f2630;
     --np-muted: #6f6470;
-
-    // Borders
     --np-border: #e8dee6;
-
-    // Semantic status
-    --np-success: #1d8a5b;
-    --np-warning: #b7791f;
-    --np-danger: #c44e63;
-
-    // Radius — DESIGN.md: cards 12px, inputs/buttons 8px, pills 999px
-    --np-radius-card: 12px;
-    --np-radius-input: 8px;
-    --np-radius-btn: 8px;
-
-    // Elevation shadows
-    --np-shadow-sm: 0 1px 2px rgba(47, 38, 48, 0.04);
-    --np-shadow-md: 0 8px 24px rgba(47, 38, 48, 0.06);
-
-    // Typography
     --np-font: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
         sans-serif;
 }
 
 .o_nakivo_reseller_portal {
-    // Bootstrap 5 CSS variable overrides (applied inside our scope via cascade)
-    --bs-primary: #714b67;
+    --bs-primary: var(--np-primary);
     --bs-primary-rgb: 113, 75, 103;
     --bs-border-color: var(--np-border);
+    --bs-link-color: var(--np-primary);
+    --bs-link-hover-color: var(--np-primary-hover);
 
+    background: var(--np-bg);
+    color: var(--np-text);
     font-family: var(--np-font);
 
-    // Card surfaces
-    .card {
-        border-radius: var(--np-radius-card);
-        border: 1px solid var(--np-border);
-        box-shadow: var(--np-shadow-sm);
-    }
-
-    // Primary button uses brand color
     .btn-primary {
-        background-color: var(--np-primary);
-        border-color: var(--np-primary);
-        border-radius: var(--np-radius-btn);
-        color: #fff;
-
-        &:hover,
-        &:focus {
-            background-color: var(--np-primary-hover);
-            border-color: var(--np-primary-hover);
-        }
+        --bs-btn-bg: var(--np-primary);
+        --bs-btn-border-color: var(--np-primary);
+        --bs-btn-hover-bg: var(--np-primary-hover);
+        --bs-btn-hover-border-color: var(--np-primary-hover);
+        --bs-btn-active-bg: var(--np-primary-hover);
+        --bs-btn-active-border-color: var(--np-primary-hover);
     }
 
-    .btn-outline-secondary {
-        border-radius: var(--np-radius-btn);
+    .card,
+    .modal-content,
+    .form-control,
+    .form-select,
+    .btn {
+        border-radius: 0.5rem;
     }
 
-    // Record cards in the list
-    .o_nakivo_reseller_portal_record {
-        border-radius: var(--np-radius-card);
-        border: 1px solid var(--np-border);
-        background: var(--np-surface);
-        box-shadow: var(--np-shadow-sm);
-        transition:
-            transform 0.15s ease,
-            box-shadow 0.15s ease;
-
-        &:hover {
-            box-shadow: var(--np-shadow-md);
-            transform: translateY(-1px);
-        }
+    .card {
+        box-shadow: 0 1px 2px rgba(47, 38, 48, 0.04);
     }
+}
 
-    // Loading and empty state surfaces
-    .o_nakivo_reseller_portal_loading,
-    .o_nakivo_reseller_portal_empty {
-        border: 1px dashed var(--np-border);
-        border-radius: var(--np-radius-card);
-        background: var(--np-surface-alt);
+.np-sidebar {
+    max-height: none;
+}
+
+.np-sidebar-logo {
+    width: 2rem;
+    height: 2rem;
+    background: var(--np-primary);
+}
+
+.np-sidebar-item {
+    color: var(--np-text);
+
+    &:hover,
+    &:focus {
+        background: var(--np-primary-soft);
+        color: var(--np-primary);
     }
+}
 
-    // Form input sizing and radius
-    .o_nakivo_reseller_portal_form {
-        .form-control,
-        .form-select {
-            border-radius: var(--np-radius-input);
-            min-height: 2.75rem;
-        }
+.np-sidebar-item-active {
+    background: var(--np-primary-soft);
+    border-left: 0.25rem solid var(--np-primary) !important;
+    color: var(--np-primary);
+}
+
+.np-sidebar-chevron-open {
+    transform: rotate(90deg);
+}
+
+.np-stat-value {
+    color: var(--np-text);
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.np-nav-card {
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+
+    &:hover,
+    &:focus {
+        box-shadow: 0 0.5rem 1.5rem rgba(47, 38, 48, 0.08);
+        transform: translateY(-1px);
+    }
+}
+
+.np-nav-card-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+.np-status-badge {
+    background: var(--np-primary-soft);
+    color: var(--np-primary);
+}
+
+.np-cell-text {
+    max-width: 14rem;
+}
+
+.np-actions-cell {
+    width: 1%;
+}
+
+@media (min-width: 992px) {
+    .np-sidebar {
+        width: 16rem;
+        max-height: 100vh;
+        position: sticky;
+        top: 0;
     }
 }

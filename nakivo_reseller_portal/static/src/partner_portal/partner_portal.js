@@ -1,34 +1,38 @@
 /** @odoo-module **/
 
-import { browser } from "@web/core/browser/browser";
 import { _t } from "@web/core/l10n/translation";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { Component, onWillStart, useState } from "@odoo/owl";
 
+import { AppSidebar } from "./components/app_sidebar";
+import { CreateOpportunityModal } from "./components/create_opportunity_modal";
+import { DashboardView } from "./components/dashboard_view";
+import { RecordListView } from "./components/record_list_view";
+
 export class PartnerPortalRoot extends Component {
     static template = "nakivo_reseller_portal.PartnerPortalRoot";
+    static components = {
+        AppSidebar,
+        CreateOpportunityModal,
+        DashboardView,
+        RecordListView,
+    };
     static props = {
         apiBasePath: String,
         csrfToken: String,
+        userName: String,
     };
 
     setup() {
         this.http = useService("http");
         this.state = useState({
-            activeTab: "opportunities",
-            confirmingDeleteId: null,
+            activeSection: "dashboard",
             dashboard: this._emptyDashboard(),
-            deletingId: null,
             error: "",
-            form: {
-                description: "",
-                expected_revenue: "",
-                name: "",
-                partner_id: "",
-            },
+            lastUpdated: "",
             loading: true,
-            submitting: false,
+            showCreateModal: false,
         });
 
         onWillStart(async () => {
@@ -36,43 +40,9 @@ export class PartnerPortalRoot extends Component {
         });
     }
 
-    get currentItems() {
-        return this.state.dashboard[this.state.activeTab] || [];
-    }
-
-    get hasCustomers() {
-        return this.state.dashboard.customers.length > 0;
-    }
-
-    get tabs() {
-        return [
-            {
-                count: this.state.dashboard.opportunities.length,
-                id: "opportunities",
-                label: _t("Opportunities"),
-            },
-            {
-                count: this.state.dashboard.quotations.length,
-                id: "quotations",
-                label: _t("Quotations"),
-            },
-            {
-                count: this.state.dashboard.sales_orders.length,
-                id: "sales_orders",
-                label: _t("Sales Orders"),
-            },
-            {
-                count: this.state.dashboard.invoices.length,
-                id: "invoices",
-                label: _t("Invoices"),
-            },
-            {
-                count: this.state.dashboard.customers.length,
-                id: "customers",
-                label: _t("Customers"),
-            },
-        ];
-    }
+    // -------------------------------------------------------------------------
+    // Private helpers
+    // -------------------------------------------------------------------------
 
     _emptyDashboard() {
         return {
@@ -84,13 +54,6 @@ export class PartnerPortalRoot extends Component {
         };
     }
 
-    _extractErrorMessage(result) {
-        if (result && result.error && result.error.message) {
-            return result.error.message;
-        }
-        return _t("Unexpected server response.");
-    }
-
     _normalizeDashboard(data) {
         const dashboard = this._emptyDashboard();
         for (const key of Object.keys(dashboard)) {
@@ -99,121 +62,350 @@ export class PartnerPortalRoot extends Component {
         return dashboard;
     }
 
-    _requireSuccess(result) {
-        if (!result || result.success !== true) {
-            throw new Error(this._extractErrorMessage(result));
+    // -------------------------------------------------------------------------
+    // Computed properties
+    // -------------------------------------------------------------------------
+
+    /** Nav items passed to AppSidebar */
+    get sidebarSections() {
+        const d = this.state.dashboard;
+        return [
+            {
+                id: "dashboard",
+                label: _t("Dashboard"),
+                iconClass: "fa-th-large",
+                children: [],
+            },
+            {
+                id: "opportunities_group",
+                label: _t("Opportunities"),
+                iconClass: "fa-bullseye",
+                children: [
+                    {
+                        id: "opportunities",
+                        label: _t("All Opportunities"),
+                        count: d.opportunities.length,
+                    },
+                ],
+            },
+            {
+                id: "sales_group",
+                label: _t("Sales"),
+                iconClass: "fa-shopping-cart",
+                children: [
+                    {
+                        id: "quotations",
+                        label: _t("Quotations"),
+                        iconClass: "fa-file-text-o",
+                        count: d.quotations.length,
+                    },
+                    {
+                        id: "sales_orders",
+                        label: _t("Sales Orders"),
+                        iconClass: "fa-shopping-cart",
+                        count: d.sales_orders.length,
+                    },
+                ],
+            },
+            {
+                id: "invoices",
+                label: _t("Invoices"),
+                iconClass: "fa-file-text",
+                count: d.invoices.length,
+                children: [],
+            },
+            {
+                id: "customers",
+                label: _t("Customers"),
+                iconClass: "fa-users",
+                count: d.customers.length,
+                children: [],
+            },
+        ];
+    }
+
+    /** Quicklink cards for DashboardView */
+    get dashboardCards() {
+        const d = this.state.dashboard;
+        return [
+            {
+                id: "card-opp",
+                sectionId: "opportunities",
+                label: _t("Opportunities"),
+                count: d.opportunities.length,
+                iconClass: "fa-bullseye",
+            },
+            {
+                id: "card-quot",
+                sectionId: "quotations",
+                label: _t("Quotations"),
+                count: d.quotations.length,
+                iconClass: "fa-file-text-o",
+            },
+            {
+                id: "card-so",
+                sectionId: "sales_orders",
+                label: _t("Sales Orders"),
+                count: d.sales_orders.length,
+                iconClass: "fa-shopping-cart",
+            },
+            {
+                id: "card-inv",
+                sectionId: "invoices",
+                label: _t("Invoices"),
+                count: d.invoices.length,
+                iconClass: "fa-file-text",
+            },
+            {
+                id: "card-cust",
+                sectionId: "customers",
+                label: _t("Customers"),
+                count: d.customers.length,
+                iconClass: "fa-users",
+            },
+        ];
+    }
+
+    /** Summary stats shown at the top of the dashboard */
+    get dashboardStats() {
+        const opps = this.state.dashboard.opportunities || [];
+        const totalRevenue = opps.reduce(
+            (sum, o) => sum + (o.expected_revenue || 0),
+            0
+        );
+        const revenueLabel =
+            "$" +
+            totalRevenue.toLocaleString("en", {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+            });
+        return [
+            {
+                id: "stat-opps",
+                label: _t("Total Opportunities"),
+                value: opps.length,
+            },
+            {
+                id: "stat-revenue",
+                label: _t("Total Revenue"),
+                value: revenueLabel,
+            },
+        ];
+    }
+
+    /** Records for the currently active section */
+    get currentRecords() {
+        return this.state.dashboard[this.state.activeSection] || [];
+    }
+
+    /**
+     * Column/meta config for the active section.
+     * Returns null when activeSection is "dashboard".
+     */
+    get currentSectionConfig() {
+        const configs = {
+            opportunities: {
+                title: _t("Opportunities"),
+                subtitle: _t(
+                    "All opportunities where you are the assigned reseller."
+                ),
+                columns: [
+                    { key: "name", label: _t("Opportunity"), headerIcon: "T" },
+                    {
+                        key: "partner_name",
+                        label: _t("Customer"),
+                        headerIcon: "T",
+                    },
+                    {
+                        key: "stage_name",
+                        label: _t("Stage"),
+                        headerIcon: "tag",
+                        type: "badge",
+                    },
+                    {
+                        key: "expected_revenue",
+                        label: _t("Exp. Revenue"),
+                        headerIcon: "T",
+                    },
+                ],
+                showCreateButton: true,
+            },
+            quotations: {
+                title: _t("Quotations"),
+                subtitle: _t(
+                    "All quotations where you are listed as the reseller."
+                ),
+                columns: [
+                    { key: "name", label: _t("Quotation"), headerIcon: "T" },
+                    {
+                        key: "partner_name",
+                        label: _t("Customer"),
+                        headerIcon: "T",
+                    },
+                    { key: "date_order", label: _t("Date"), headerIcon: "T" },
+                    {
+                        key: "amount_total",
+                        label: _t("Total"),
+                        headerIcon: "T",
+                    },
+                    {
+                        key: "state",
+                        label: _t("Status"),
+                        headerIcon: "tag",
+                        type: "badge",
+                    },
+                ],
+                showCreateButton: false,
+            },
+            sales_orders: {
+                title: _t("Sales Orders"),
+                subtitle: _t(
+                    "All sales orders where you are listed as the reseller."
+                ),
+                columns: [
+                    { key: "name", label: _t("Order"), headerIcon: "T" },
+                    {
+                        key: "partner_name",
+                        label: _t("Customer"),
+                        headerIcon: "T",
+                    },
+                    { key: "date_order", label: _t("Date"), headerIcon: "T" },
+                    {
+                        key: "amount_total",
+                        label: _t("Total"),
+                        headerIcon: "T",
+                    },
+                    {
+                        key: "state",
+                        label: _t("Status"),
+                        headerIcon: "tag",
+                        type: "badge",
+                    },
+                ],
+                showCreateButton: false,
+            },
+            invoices: {
+                title: _t("Invoices"),
+                subtitle: _t(
+                    "All invoices where you are listed as the reseller."
+                ),
+                columns: [
+                    { key: "name", label: _t("Invoice"), headerIcon: "T" },
+                    {
+                        key: "partner_name",
+                        label: _t("Customer"),
+                        headerIcon: "T",
+                    },
+                    {
+                        key: "invoice_date",
+                        label: _t("Date"),
+                        headerIcon: "T",
+                    },
+                    {
+                        key: "amount_total",
+                        label: _t("Total"),
+                        headerIcon: "T",
+                    },
+                    {
+                        key: "payment_state",
+                        label: _t("Payment"),
+                        headerIcon: "tag",
+                        type: "badge",
+                    },
+                ],
+                showCreateButton: false,
+            },
+            customers: {
+                title: _t("Customers"),
+                subtitle: _t(
+                    "All customers where you are listed as the reseller."
+                ),
+                columns: [
+                    { key: "name", label: _t("Name"), headerIcon: "T" },
+                    { key: "email", label: _t("Email"), headerIcon: "mail" },
+                    { key: "phone", label: _t("Phone"), headerIcon: "phone" },
+                    { key: "city", label: _t("City"), headerIcon: "T" },
+                ],
+                showCreateButton: false,
+            },
+        };
+        return configs[this.state.activeSection] || null;
+    }
+
+    /**
+     * Delete action config passed to RecordListView.
+     * Only defined for the opportunities section.
+     */
+    get deleteAction() {
+        if (this.state.activeSection !== "opportunities") {
+            return undefined;
         }
-        return result.data || {};
+        return {
+            apiBasePath: this.props.apiBasePath,
+            csrfToken: this.props.csrfToken,
+            onDeleted: (id) => this.onOpportunityDeleted(id),
+        };
     }
 
-    _resetForm() {
-        this.state.form.description = "";
-        this.state.form.expected_revenue = "";
-        this.state.form.name = "";
-        this.state.form.partner_id = "";
-    }
-
-    formatAmount(amount, currencyName) {
-        if (amount === false || amount === null || amount === undefined) {
-            return "-";
-        }
-        return currencyName ? `${amount} ${currencyName}` : `${amount}`;
-    }
-
-    getTabButtonClass(tabId) {
-        return tabId === this.state.activeTab
-            ? "btn btn-primary rounded-pill"
-            : "btn btn-outline-secondary rounded-pill";
-    }
+    // -------------------------------------------------------------------------
+    // Data loading
+    // -------------------------------------------------------------------------
 
     async loadDashboard() {
         this.state.error = "";
         this.state.loading = true;
         try {
             const result = await this.http.get(
-                `${this.props.apiBasePath}/dashboard`,
+                `${this.props.apiBasePath}/dashboard`
             );
-            const data = this._requireSuccess(result);
-            this.state.dashboard = this._normalizeDashboard(data);
-        } catch (error) {
+            if (!result || result.success !== true) {
+                throw new Error(
+                    result?.error?.message ||
+                        _t("Unable to load portal data.")
+                );
+            }
+            this.state.dashboard = this._normalizeDashboard(result.data || {});
+            this.state.lastUpdated = new Date().toLocaleTimeString("en", {
+                hour: "2-digit",
+                minute: "2-digit",
+            });
+        } catch (e) {
             this.state.error =
-                error.message || _t("Unable to load reseller portal data.");
+                e.message || _t("Unable to load reseller portal data.");
         } finally {
             this.state.loading = false;
         }
     }
 
-    onClickTab(ev) {
-        this.state.activeTab = ev.currentTarget.dataset.tab;
+    // -------------------------------------------------------------------------
+    // Event handlers
+    // -------------------------------------------------------------------------
+
+    onNavigate(sectionId) {
+        this.state.activeSection = sectionId;
     }
 
-    async createOpportunity() {
-        this.state.error = "";
-        this.state.submitting = true;
-        try {
-            const formData = new FormData();
-            formData.append("csrf_token", this.props.csrfToken);
-            formData.append("name", this.state.form.name);
-
-            if (this.state.form.partner_id) {
-                formData.append("partner_id", this.state.form.partner_id);
-            }
-            if (this.state.form.expected_revenue) {
-                formData.append(
-                    "expected_revenue",
-                    this.state.form.expected_revenue,
-                );
-            }
-            if (this.state.form.description) {
-                formData.append("description", this.state.form.description);
-            }
-
-            const result = await this.http.post(
-                `${this.props.apiBasePath}/opportunities`,
-                formData,
-            );
-            this._requireSuccess(result);
-            this._resetForm();
-            this.state.activeTab = "opportunities";
-            await this.loadDashboard();
-        } catch (error) {
-            this.state.error =
-                error.message || _t("Unable to create the opportunity.");
-        } finally {
-            this.state.submitting = false;
-        }
+    async onRefreshDashboard() {
+        await this.loadDashboard();
     }
 
-    requestDeleteConfirm(ev) {
-        this.state.confirmingDeleteId = Number(
-            ev.currentTarget.dataset.id || 0,
-        );
+    onCreateClick() {
+        this.state.showCreateModal = true;
     }
 
-    cancelDelete() {
-        this.state.confirmingDeleteId = null;
+    onModalClose() {
+        this.state.showCreateModal = false;
     }
 
-    async confirmDelete() {
-        const opportunityId = this.state.confirmingDeleteId;
-        if (!opportunityId) {
-            return;
-        }
-        this.state.error = "";
-        this.state.deletingId = opportunityId;
-        try {
-            const url = `${this.props.apiBasePath}/opportunities/${opportunityId}?csrf_token=${encodeURIComponent(this.props.csrfToken)}`;
-            const response = await browser.fetch(url, { method: "DELETE" });
-            const result = await response.json();
-            this._requireSuccess(result);
-            await this.loadDashboard();
-        } catch (error) {
-            this.state.error =
-                error.message || _t("Unable to delete the opportunity.");
-        } finally {
-            this.state.confirmingDeleteId = null;
-            this.state.deletingId = null;
-        }
+    async onOpportunityCreated() {
+        this.state.showCreateModal = false;
+        await this.loadDashboard();
+    }
+
+    /** Optimistic removal — avoids a full dashboard reload after delete */
+    onOpportunityDeleted(id) {
+        this.state.dashboard.opportunities =
+            this.state.dashboard.opportunities.filter((o) => o.id !== id);
     }
 }
 

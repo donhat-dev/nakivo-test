@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="nakivo_reseller_portal.RecordListView">
+        <div>
+
+            <!-- Page header -->
+            <div class="mb-4">
+                <h1 class="h4 fw-bold mb-1"><t t-esc="props.title"/></h1>
+                <p t-if="props.subtitle" class="text-muted mb-0 small"><t t-esc="props.subtitle"/></p>
+            </div>
+
+            <!-- Toolbar: search (flex-grow) + CTA (right) -->
+            <div class="row g-2 align-items-center mb-3">
+                <div class="col-12 col-sm">
+                    <input
+                        class="form-control"
+                        type="search"
+                        placeholder="Search…"
+                        t-att-value="state.searchQuery"
+                        t-on-input="onSearchInput"
+                        autocomplete="off"
+                    />
+                </div>
+                <div t-if="props.showCreateButton" class="col-12 col-sm-auto">
+                    <button
+                        type="button"
+                        class="btn btn-primary w-100 text-nowrap"
+                        t-on-click="onCreateClick"
+                    ><i class="fa fa-plus me-1"/>New Opportunity</button>
+                </div>
+            </div>
+
+            <!-- Table area -->
+            <div class="card">
+
+                <!-- Loading -->
+                <t t-if="props.loading">
+                    <div class="d-flex align-items-center justify-content-center gap-2 text-muted py-5">
+                        <div class="spinner-border spinner-border-sm" role="status"/>
+                        <span>Loading…</span>
+                    </div>
+                </t>
+
+                <!-- Empty state -->
+                <t t-elif="!filteredRecords.length">
+                    <div class="text-center text-muted py-5">
+                        <div class="mb-2 display-6 opacity-25"><i class="fa fa-envelope-o"/></div>
+                        <p class="mb-0 small">No results found.</p>
+                        <p t-if="state.searchQuery" class="mb-0 small">Try adjusting your search.</p>
+                    </div>
+                </t>
+
+                <!-- Data table -->
+                <t t-else="">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <t t-foreach="props.columns" t-as="col" t-key="col.key">
+                                        <th class="text-muted fw-semibold small border-0 py-3"
+                                            t-att-data-header-icon="col.headerIcon">
+                                            <t t-esc="col.label"/>
+                                        </th>
+                                    </t>
+                                    <th t-if="props.deleteAction" class="border-0"/>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="filteredRecords" t-as="record" t-key="record.id">
+                                    <tr>
+                                        <t t-foreach="props.columns" t-as="col" t-key="col.key">
+                                            <td class="align-middle">
+                                                <t t-if="col.type === 'badge'">
+                                                    <span class="badge rounded-pill np-status-badge fw-semibold">
+                                                        <t t-esc="getCellValue(record, col)"/>
+                                                    </span>
+                                                </t>
+                                                <t t-else="">
+                                                    <span class="np-cell-text d-block overflow-hidden text-nowrap text-truncate" t-att-title="getCellValue(record, col)">
+                                                        <t t-esc="getCellValue(record, col)"/>
+                                                    </span>
+                                                </t>
+                                            </td>
+                                        </t>
+                                        <td t-if="props.deleteAction" class="align-middle text-end np-actions-cell">
+                                            <DeleteButton
+                                                recordId="record.id"
+                                                apiBasePath="props.deleteAction.apiBasePath"
+                                                csrfToken="props.deleteAction.csrfToken"
+                                                onDeleted="props.deleteAction.onDeleted"
+                                            />
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+
+            </div>
+        </div>
+    </t>
+</templates>

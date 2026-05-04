@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<!-- ─────────────────────────────────────────────────────────────
+         res.partner form extension
+         Adds:
+           • is_reseller checkbox (right column, after category_id)
+           • reseller_partner_id field (only visible on non-reseller contacts)
+           • has_reseller_portal_access alert + grant button (reseller only)
+    ───────────────────────────────────────────────────────────────── -->
+	<record id="view_partner_form_reseller" model="ir.ui.view">
+		<field name="name">res.partner.form.reseller</field>
+		<field name="model">res.partner</field>
+		<field name="inherit_id" ref="base.view_partner_form"/>
+		<field name="arch" type="xml">
+			<!-- Alert: reseller has no portal access yet -->
+			<xpath expr="//div[@name='warning_tax']" position="after">
+				<div class="alert alert-warning" role="alert" invisible="not is_reseller or has_reseller_portal_access">
+					<strong>Portal access not granted.</strong>                    This reseller cannot log in to the Reseller Portal yet.                    Use the 
+					<em>Grant Reseller Portal Access</em> button below to onboard them.                
+				</div>
+			</xpath>
+			<!-- Grant button in header -->
+			<xpath expr="//div[@name='warning_tax']" position="before">
+				<header>
+					<button name="action_grant_reseller_portal_access" type="object" string="Grant Reseller Portal Access" class="btn-primary" invisible="not is_reseller or has_reseller_portal_access" groups="base.group_user" />
+				</header>
+			</xpath>
+			<!-- is_reseller checkbox in the right column (after category_id) -->
+			<field name="category_id" position="after">
+				<field name="is_reseller" groups="base.group_user"/></field>
+			<!-- reseller_partner_id: only shown on non-reseller partners (customers/contacts) -->
+			<field name="is_reseller" position="after">
+				<field name="reseller_partner_id" options="{'no_create': True}" invisible="is_reseller" groups="base.group_user" /></field>
+		</field>
+	</record>
+	<!-- ─────────────────────────────────────────────────────────────
+         Resellers list view
+    ───────────────────────────────────────────────────────────────── -->
+	<record id="view_partner_reseller_tree" model="ir.ui.view">
+		<field name="name">res.partner.reseller.tree</field>
+		<field name="model">res.partner</field>
+		<field name="arch" type="xml">
+			<list string="Resellers" default_order="name">
+				<field name="name"/>
+				<field name="email"/>
+				<field name="phone"/>
+				<field name="city"/>
+				<field name="country_id"/>
+				<field name="has_reseller_portal_access" string="Portal Access"/>
+			</list>
+		</field>
+	</record>
+	<!-- ─────────────────────────────────────────────────────────────
+         Resellers action + menu under Contacts
+    ───────────────────────────────────────────────────────────────── -->
+	<record id="action_partner_resellers" model="ir.actions.act_window">
+		<field name="name">Resellers</field>
+		<field name="res_model">res.partner</field>
+		<field name="view_mode">list,form</field>
+		<field name="view_id" ref="view_partner_reseller_tree"/>
+		<field name="domain">[('is_reseller', '=', True)]</field>
+		<field name="context">{'default_is_reseller': True}</field>
+		<field name="help" type="html">
+			<p class="o_view_nocontent_smiling_face">                No resellers found.            </p>
+			<p>                Mark a partner as a reseller using the                
+				<strong>Is Reseller</strong> checkbox on their contact form.            
+			</p>
+		</field>
+	</record>
+	<menuitem id="menu_partner_resellers" name="Resellers" parent="contacts.menu_contacts" action="action_partner_resellers" sequence="15" groups="base.group_user" />
+</odoo>

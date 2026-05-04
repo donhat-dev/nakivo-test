@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="nakivo_reseller_portal.AppSidebar">
+        <aside class="np-sidebar flex-shrink-0 bg-white border-end overflow-auto">
+            <div class="d-flex align-items-center gap-2 p-3 border-bottom">
+                <div class="np-sidebar-logo d-inline-flex align-items-center justify-content-center rounded text-white flex-shrink-0">
+                    <i class="fa fa-user"/>
+                </div>
+                <div class="min-w-0">
+                    <div class="fw-bold lh-sm text-truncate"><t t-esc="props.userName"/></div>
+                    <div class="small text-muted fw-semibold text-uppercase">RESELLERS</div>
+                </div>
+            </div>
+
+            <nav class="list-group list-group-flush py-2">
+                <t t-foreach="props.sections" t-as="section" t-key="section.id">
+
+                    <!-- Collapsible group -->
+                    <t t-if="section.children and section.children.length">
+                        <button
+                            type="button"
+                            class="np-sidebar-item list-group-item list-group-item-action d-flex align-items-center justify-content-between gap-2 border-0 rounded-0 px-3 py-2"
+                            t-att-data-group="section.id"
+                            t-on-click="onGroupToggle"
+                        >
+                            <span class="d-flex align-items-center gap-2 min-w-0 flex-grow-1 overflow-hidden">
+                                <i t-if="section.iconClass" t-att-class="'fa fa-fw text-muted ' + section.iconClass"/>
+                                <span class="text-truncate"><t t-esc="section.label"/></span>
+                            </span>
+                            <i t-att-class="'fa fa-angle-right flex-shrink-0' + (isExpanded(section.id) ? ' np-sidebar-chevron-open' : '')"/>
+                        </button>
+                        <div t-if="isExpanded(section.id)">
+                            <t t-foreach="section.children" t-as="child" t-key="child.id">
+                                <button
+                                    type="button"
+                                    t-att-class="'np-sidebar-item list-group-item list-group-item-action d-flex align-items-center justify-content-between gap-2 border-0 rounded-0 py-2 pe-3 ps-5' + (isActive(child.id) ? ' np-sidebar-item-active' : '')"
+                                    t-att-data-section="child.id"
+                                    t-on-click="onNavClick"
+                                >
+                                    <span class="d-flex align-items-center gap-2 min-w-0 flex-grow-1 overflow-hidden">
+                                        <span class="text-truncate"><t t-esc="child.label"/></span>
+                                    </span>
+                                    <t t-if="child.count !== undefined and child.count !== null">
+                                        <span class="badge rounded-pill text-bg-light flex-shrink-0"><t t-esc="child.count"/></span>
+                                    </t>
+                                </button>
+                            </t>
+                        </div>
+                    </t>
+
+                    <!-- Leaf nav item -->
+                    <t t-else="">
+                        <button
+                            type="button"
+                            t-att-class="'np-sidebar-item list-group-item list-group-item-action d-flex align-items-center justify-content-between gap-2 border-0 rounded-0 px-3 py-2' + (isActive(section.id) ? ' np-sidebar-item-active' : '')"
+                            t-att-data-section="section.id"
+                            t-on-click="onNavClick"
+                        >
+                            <span class="d-flex align-items-center gap-2 min-w-0 flex-grow-1 overflow-hidden">
+                                <i t-if="section.iconClass" t-att-class="'fa fa-fw text-muted ' + section.iconClass"/>
+                                <span class="text-truncate"><t t-esc="section.label"/></span>
+                            </span>
+                            <t t-if="section.count !== undefined and section.count !== null">
+                                <span class="badge rounded-pill text-bg-light flex-shrink-0"><t t-esc="section.count"/></span>
+                            </t>
+                        </button>
+                    </t>
+
+                </t>
+            </nav>
+        </aside>
+    </t>
+</templates>

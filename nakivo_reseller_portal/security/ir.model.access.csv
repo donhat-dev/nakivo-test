@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_crm_lead_reseller_portal,crm.lead reseller portal,crm.model_crm_lead,nakivo_reseller_portal.group_reseller_portal_user,1,1,1,1
+access_sale_order_reseller_portal,sale.order reseller portal,sale.model_sale_order,nakivo_reseller_portal.group_reseller_portal_user,1,0,0,0
+access_account_move_reseller_portal,account.move reseller portal,account.model_account_move,nakivo_reseller_portal.group_reseller_portal_user,1,0,0,0
+access_res_partner_reseller_portal,res.partner reseller portal,base.model_res_partner,nakivo_reseller_portal.group_reseller_portal_user,1,0,0,0
