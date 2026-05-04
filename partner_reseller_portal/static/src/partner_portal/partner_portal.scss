@@ -1,0 +1,26 @@
+.o_partner_reseller_portal {
+    .o_partner_reseller_portal_record {
+        transition:
+            transform 0.15s ease,
+            box-shadow 0.15s ease;
+
+        &:hover {
+            box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.08);
+            transform: translateY(-1px);
+        }
+    }
+
+    .o_partner_reseller_portal_loading,
+    .o_partner_reseller_portal_empty {
+        border: 1px dashed rgba(108, 117, 125, 0.35);
+        border-radius: 1rem;
+        background: rgba(248, 249, 250, 0.7);
+    }
+
+    .o_partner_reseller_portal_form {
+        .form-control,
+        .form-select {
+            min-height: 2.75rem;
+        }
+    }
+}

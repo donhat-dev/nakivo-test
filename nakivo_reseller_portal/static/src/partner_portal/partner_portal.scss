@@ -1,0 +1,102 @@
+:root {
+    // Brand colors — from DESIGN.md
+    --np-primary: #714b67;
+    --np-primary-hover: #5e3f56;
+    --np-primary-soft: #f1eaee;
+    --np-accent: #00a09d;
+    --np-accent-hover: #008784;
+    --np-accent-soft: #e5f7f6;
+
+    // Surfaces
+    --np-bg: #f8f6f8;
+    --np-surface: #ffffff;
+    --np-surface-alt: #f4eff3;
+
+    // Text
+    --np-text: #2f2630;
+    --np-muted: #6f6470;
+
+    // Borders
+    --np-border: #e8dee6;
+
+    // Semantic status
+    --np-success: #1d8a5b;
+    --np-warning: #b7791f;
+    --np-danger: #c44e63;
+
+    // Radius — DESIGN.md: cards 12px, inputs/buttons 8px, pills 999px
+    --np-radius-card: 12px;
+    --np-radius-input: 8px;
+    --np-radius-btn: 8px;
+
+    // Typography
+    --np-font: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+
+    // Bootstrap 5 CSS variable overrides (applied inside our scope via cascade)
+    --bs-primary: #714b67;
+    --bs-primary-rgb: 113, 75, 103;
+    --bs-border-color: var(--np-border);
+}
+
+.o_nakivo_reseller_portal {
+    font-family: var(--np-font);
+
+    // Card surfaces
+    .card {
+        border-radius: var(--np-radius-card);
+        border: 1px solid var(--np-border);
+        box-shadow: 0 1px 2px rgba(47, 38, 48, 0.04);
+    }
+
+    // Primary button uses brand color
+    .btn-primary {
+        background-color: var(--np-primary);
+        border-color: var(--np-primary);
+        border-radius: var(--np-radius-btn);
+        color: #fff;
+
+        &:hover,
+        &:focus {
+            background-color: var(--np-primary-hover);
+            border-color: var(--np-primary-hover);
+        }
+    }
+
+    .btn-outline-secondary {
+        border-radius: var(--np-radius-btn);
+    }
+
+    // Record cards in the list
+    .o_nakivo_reseller_portal_record {
+        border-radius: var(--np-radius-card);
+        border: 1px solid var(--np-border);
+        background: var(--np-surface);
+        box-shadow: 0 1px 2px rgba(47, 38, 48, 0.04);
+        transition:
+            transform 0.15s ease,
+            box-shadow 0.15s ease;
+
+        &:hover {
+            box-shadow: 0 8px 24px rgba(47, 38, 48, 0.06);
+            transform: translateY(-1px);
+        }
+    }
+
+    // Loading and empty state surfaces
+    .o_nakivo_reseller_portal_loading,
+    .o_nakivo_reseller_portal_empty {
+        border: 1px dashed rgba(108, 117, 125, 0.35);
+        border-radius: 1rem;
+        background: rgba(248, 249, 250, 0.7);
+    }
+
+    // Form input sizing and radius
+    .o_nakivo_reseller_portal_form {
+        .form-control,
+        .form-select {
+            border-radius: var(--np-radius-input);
+            min-height: 2.75rem;
+        }
+    }
+}

@@ -1,0 +1,2 @@
+# Development tooling for local quality checks
+pre-commit>=4.0,<5.0

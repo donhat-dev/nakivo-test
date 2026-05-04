@@ -1,0 +1,102 @@
+exclude: |
+  (?x)
+  ^setup/|/static/description/index\.html$|
+  \.svg$|/tests/([^/]+/)?cassettes/|
+  /static/(src/)?lib/|
+  /build/|/dist/|
+  (LICENSE.*|COPYING.*)
+default_language_version:
+  python: python3
+  node: "22.9.0"
+repos:
+  - repo: local
+    hooks:
+      - id: forbidden-files
+        name: forbidden files
+        entry: found forbidden files; remove them
+        language: fail
+        files: "\\.rej$"
+      - id: en-po-files
+        name: en.po files cannot exist
+        entry: found a en.po file
+        language: fail
+        files: "[a-zA-Z0-9_]*/i18n/en\\.po$"
+  - repo: https://github.com/OCA/maintainer-tools
+    rev: d4657f8c17a576d0c56c68064e199545ee75db52
+    hooks:
+      - id: oca-fix-manifest-website
+        args: ["https://github.com/donhat-nakivo/nakivo-test"]
+      - id: oca-gen-addon-readme
+        args:
+          - --repo-name=nakivo-test
+          - --org-name=donhat-nakivo
+          - --branch=main
+      - id: oca-gen-addon-icon
+      - id: oca-gen-external-dependencies
+  - repo: https://github.com/OCA/odoo-pre-commit-hooks
+    rev: v0.0.33
+    hooks:
+      - id: oca-checks-odoo-module
+  - repo: local
+    hooks:
+      - id: prettier
+        name: prettier (with plugin-xml)
+        entry: prettier
+        args:
+          - --write
+          - --list-different
+          - --ignore-unknown
+        types: [text]
+        files: \.(css|htm|html|js|json|jsx|less|md|scss|toml|ts|xml|yaml|yml)$
+        language: node
+        additional_dependencies:
+          - "prettier@3.3.3"
+          - "@prettier/plugin-xml@3.4.1"
+      - id: eslint
+        name: eslint
+        entry: eslint
+        args:
+          - --color
+          - --fix
+        verbose: true
+        types: [javascript]
+        language: node
+        additional_dependencies:
+          - "eslint@9.12.0"
+          - "globals@16.0.0"
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: /README\.rst$|\.pot?$
+      - id: end-of-file-fixer
+        exclude: /README\.rst$|\.pot?$
+      - id: debug-statements
+      - id: fix-encoding-pragma
+        args: ["--remove"]
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: check-executables-have-shebangs
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: check-xml
+      - id: mixed-line-ending
+        args: ["--fix=lf"]
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.8
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+      - id: ruff-format
+  - repo: https://github.com/OCA/pylint-odoo
+    rev: v9.1.3
+    hooks:
+      - id: pylint_odoo
+        name: pylint with optional checks
+        args:
+          - --rcfile=.pylintrc
+          - --exit-zero
+        verbose: true
+      - id: pylint_odoo
+        args:
+          - --rcfile=.pylintrc-mandatory

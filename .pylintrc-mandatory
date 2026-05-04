@@ -1,0 +1,41 @@
+[MASTER]
+load-plugins=pylint_odoo
+score=n
+
+[ODOOLINT]
+manifest-required-keys=license
+manifest-deprecated-keys=description,active
+license-allowed=LGPL-3
+valid-odoo-versions=19.0
+
+[MESSAGES CONTROL]
+disable=all
+
+enable=assignment-from-none,
+    dangerous-default-value,
+    duplicate-key,
+    duplicate-xml-fields,
+    duplicate-xml-record-id,
+    eval-used,
+    license-allowed,
+    manifest-deprecated-key,
+    manifest-required-key,
+    manifest-version-format,
+    method-required-super,
+    print-used,
+    reimported,
+    return-in-init,
+    sql-injection,
+    unreachable,
+    wrong-tabs-instead-of-spaces,
+    xml-syntax-error,
+    dangerous-filter-wo-user,
+    except-pass,
+    renamed-field-parameter,
+    resource-not-exist,
+    external-request-timeout
+
+[REPORTS]
+msg-template={path}:{line}: [{msg_id}({symbol}), {obj}] {msg}
+output-format=colorized
+reports=no
