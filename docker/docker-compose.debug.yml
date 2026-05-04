@@ -1,0 +1,28 @@
+# Debug overlay — adds debugpy for VS Code "Attach" debugging
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.debug.yml up -d odoo
+#
+# Then attach from VS Code: Run → "Odoo: Attach (Docker)"
+#
+# Odoo will start immediately without waiting for the debugger.
+# Add --wait-for-client to the command below if you need to pause at startup.
+
+services:
+  odoo:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      target: debug
+    image: nakivo_test_odoo_debug:19
+    environment:
+      ODOO_ENABLE_DEBUGPY: "1"
+      DEBUGPY_PORT: "${DEBUGPY_PORT:-5678}"
+      ODOO_DEBUGPY_WAIT_FOR_CLIENT: "${ODOO_DEBUGPY_WAIT_FOR_CLIENT:-0}"
+    # Keep the normal entrypoint path; it wraps Odoo with debugpy.
+    command:
+      - odoo
+      - --config=/etc/odoo/odoo.conf
+      - --dev=reload,xml,qweb
+    ports:
+      - "${DEBUGPY_PORT:-5678}:5678"

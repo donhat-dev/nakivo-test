@@ -1,0 +1,52 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: nakivo_test_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: ${ODOO_DB_USER:-odoo}
+      POSTGRES_PASSWORD: ${ODOO_DB_PASSWORD:-odoo}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${ODOO_DB_USER:-odoo} -d ${ODOO_DB_NAME:-postgres}",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  odoo:
+    image: nakivo_test_odoo:19
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      target: production
+    container_name: nakivo_test_odoo
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    ports:
+      - "${ODOO_HTTP_PORT:-8069}:8069"
+      - "${ODOO_LONGPOLLING_PORT:-8072}:8072"
+    environment:
+      HOST: db
+      USER: ${ODOO_DB_USER:-odoo}
+      PASSWORD: ${ODOO_DB_PASSWORD:-odoo}
+    volumes:
+      - ../nakivo_base_rest:/mnt/extra-addons/nakivo_base_rest:ro
+      - ../nakivo_reseller_portal:/mnt/extra-addons/nakivo_reseller_portal:ro
+      - ./odoo.conf:/etc/odoo/odoo.conf:ro
+      - ./logs:/var/log/odoo
+      - odoo_filestore:/var/lib/odoo
+    command:
+      - odoo
+      - --config=/etc/odoo/odoo.conf
+
+volumes:
+  db_data:
+  odoo_filestore:

@@ -1,0 +1,4 @@
+FROM odoo:19
+
+# Install debugpy for VS Code attach debugging
+RUN pip install --no-cache-dir --break-system-packages debugpy
