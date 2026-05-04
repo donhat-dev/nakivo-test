@@ -47,7 +47,10 @@ export class CreateOpportunityModal extends Component {
                 formData.append("partner_id", this.state.partner_id);
             }
             if (this.state.expected_revenue) {
-                formData.append("expected_revenue", this.state.expected_revenue);
+                formData.append(
+                    "expected_revenue",
+                    this.state.expected_revenue,
+                );
             }
             if (this.state.email) {
                 formData.append("email", this.state.email);
@@ -57,12 +60,12 @@ export class CreateOpportunityModal extends Component {
             }
             const result = await this.http.post(
                 `${this.props.apiBasePath}/opportunities`,
-                formData
+                formData,
             );
             if (!result || result.success !== true) {
                 throw new Error(
                     result?.error?.message ||
-                        _t("Unable to create the opportunity.")
+                        _t("Unable to create the opportunity."),
                 );
             }
             this.props.onCreated();

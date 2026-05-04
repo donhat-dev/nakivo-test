@@ -84,7 +84,8 @@ class ResPartner(models.Model):
         Step 1 — create a portal user via portal.wizard (Odoo's standard mechanism).
         Step 2 — add that user to group_reseller_portal_user in the same transaction.
 
-        Raises UserError for every precondition failure so the UI surfaces a clear message.
+        Raises UserError for every precondition failure so the UI surfaces
+        a clear message.
         """
         self.ensure_one()
         if not self.is_reseller:
@@ -139,9 +140,7 @@ class ResPartner(models.Model):
             "tag": "display_notification",
             "params": {
                 "title": _("Reseller Portal Access Granted"),
-                "message": _(
-                    "'%s' can now log in and access the Reseller Portal."
-                )
+                "message": _("'%s' can now log in and access the Reseller Portal.")
                 % self.display_name,
                 "sticky": False,
                 "type": "success",

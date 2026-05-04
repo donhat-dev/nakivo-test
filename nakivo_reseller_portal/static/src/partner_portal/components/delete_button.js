@@ -32,9 +32,7 @@ export class DeleteButton extends Component {
             const response = await browser.fetch(url, { method: "DELETE" });
             const result = await response.json();
             if (!result || result.success !== true) {
-                throw new Error(
-                    result?.error?.message || _t("Delete failed.")
-                );
+                throw new Error(result?.error?.message || _t("Delete failed."));
             }
             this.props.onDeleted(this.props.recordId);
         } catch (_e) {

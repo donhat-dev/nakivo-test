@@ -112,6 +112,7 @@ The toolchain runs: `ruff` (lint + format), `pylint-odoo` (two passes: optional 
 - **Always** apply a reseller domain filter before any `sudo()` read, write, or unlink.
 
 Safe pattern:
+
 ```python
 reseller = request.env.user.partner_id
 records = request.env["crm.lead"].sudo().search([
@@ -120,6 +121,7 @@ records = request.env["crm.lead"].sudo().search([
 ```
 
 Forbidden patterns:
+
 ```python
 model.sudo().search([])                      # no scope filter
 model.sudo().browse(record_id).unlink()      # no ownership check

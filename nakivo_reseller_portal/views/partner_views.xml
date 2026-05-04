@@ -15,8 +15,8 @@
 			<!-- Alert: reseller has no portal access yet -->
 			<xpath expr="//div[@name='warning_tax']" position="after">
 				<div class="alert alert-warning" role="alert" invisible="not is_reseller or has_reseller_portal_access">
-					<strong>Portal access not granted.</strong>                    This reseller cannot log in to the Reseller Portal yet.                    Use the 
-					<em>Grant Reseller Portal Access</em> button below to onboard them.                
+					<strong>Portal access not granted.</strong>                    This reseller cannot log in to the Reseller Portal yet.                    Use the
+					<em>Grant Reseller Portal Access</em> button below to onboard them.
 				</div>
 			</xpath>
 			<!-- Grant button in header -->
@@ -62,8 +62,8 @@
 		<field name="context">{'default_is_reseller': True}</field>
 		<field name="help" type="html">
 			<p class="o_view_nocontent_smiling_face">                No resellers found.            </p>
-			<p>                Mark a partner as a reseller using the                
-				<strong>Is Reseller</strong> checkbox on their contact form.            
+			<p>                Mark a partner as a reseller using the
+				<strong>Is Reseller</strong> checkbox on their contact form.
 			</p>
 		</field>
 	</record>

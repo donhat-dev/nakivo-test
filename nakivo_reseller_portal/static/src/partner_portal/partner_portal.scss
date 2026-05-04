@@ -82,7 +82,9 @@
 }
 
 .np-nav-card {
-    transition: box-shadow 0.15s ease, transform 0.15s ease;
+    transition:
+        box-shadow 0.15s ease,
+        transform 0.15s ease;
 
     &:hover,
     &:focus {

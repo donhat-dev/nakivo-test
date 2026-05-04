@@ -30,7 +30,7 @@ export class RecordListView extends Component {
         return this.props.records.filter(
             (r) =>
                 (r.name || "").toLowerCase().includes(q) ||
-                (r.partner_name || "").toLowerCase().includes(q)
+                (r.partner_name || "").toLowerCase().includes(q),
         );
     }
 

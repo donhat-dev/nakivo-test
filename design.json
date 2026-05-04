@@ -1,264 +1,334 @@
 {
-  "project": "Nakivo Reseller Portal",
-  "theme": {
-    "typography": {
-      "fontFamily": "Inter, sans-serif"
-    },
-    "colors": {
-      "canvas": "#F8F6F8",
-      "surface": "#FFFFFF",
-      "primary": "#714B67",
-      "text": "#111827",
-      "textSecondary": "#6B7280",
-      "border": "#E5E7EB",
-      "danger": "#EF4444",
-      "iconBgBlue": "#EEEDFD",
-      "iconColorBlue": "#4F46E5"
-    },
-    "elevation": {
-      "cardRadius": "12px",
-      "pillRadius": "999px",
-      "shadowSm": "0 1px 2px rgba(47, 38, 48, 0.04)"
-    }
-  },
-  "layout": {
-    "type": "sidebar-layout",
-    "sidebar": {
-      "width": "250px",
-      "backgroundColor": "#FFFFFF",
-      "borderRight": "1px solid #E5E7EB",
-      "branding": {
-        "logoText": "Sun Inc.",
-        "context": "PARTNERS",
-        "placement": "top-left",
-        "collapsible": false
-      },
-      "activeItemStyle": {
-        "description": "Highlighted background on the currently active nav item",
-        "borderRadius": "6px",
-        "fontWeight": "600"
-      },
-      "navigation": [
-        {
-          "id": "nav-dashboard",
-          "label": "Dashboard",
-          "icon": "home",
-          "active": true
+    "project": "Nakivo Reseller Portal",
+    "theme": {
+        "typography": {
+            "fontFamily": "Inter, sans-serif"
         },
-        {
-          "id": "nav-opportunities-group",
-          "label": "Opportunities",
-          "icon": "briefcase",
-          "collapsible": true,
-          "defaultExpanded": true,
-          "children": [
-            { "id": "nav-opportunities", "label": "All Opportunities", "icon": "list" }
-          ]
+        "colors": {
+            "canvas": "#F8F6F8",
+            "surface": "#FFFFFF",
+            "primary": "#714B67",
+            "text": "#111827",
+            "textSecondary": "#6B7280",
+            "border": "#E5E7EB",
+            "danger": "#EF4444",
+            "iconBgBlue": "#EEEDFD",
+            "iconColorBlue": "#4F46E5"
         },
-        {
-          "id": "nav-sales-group",
-          "label": "Sales",
-          "icon": "shopping-cart",
-          "collapsible": true,
-          "defaultExpanded": false,
-          "children": [
-            { "id": "nav-quotations", "label": "Quotations", "icon": "file-text" },
-            { "id": "nav-sales-orders", "label": "Sales Orders", "icon": "package" }
-          ]
-        },
-        { "id": "nav-invoices", "label": "Invoices", "icon": "file-invoice" },
-        { "id": "nav-customers", "label": "Customers", "icon": "users" }
-      ]
-    },
-    "mainContent": {
-      "backgroundColor": "#F8F6F8",
-      "padding": "24px",
-      "header": {
-        "title": "Partner Reseller Dashboard",
-        "description": "Manage your opportunities, quotations, sales orders, invoices, and customers.",
-        "actions": [
-          {
-            "id": "btn-create-opportunity",
-            "type": "button-cta",
-            "label": "New Opportunity",
-            "icon": "plus"
-          }
-        ]
-      },
-      "quickLinks": {
-        "description": "Navigation cards styled with icon and label (e.g., 'Deals' style)",
-        "display": "flex-row",
-        "gap": "16px",
-        "items": [
-          {
-            "id": "ql-opportunities",
-            "label": "Opportunities",
-            "icon": "diamond",
-            "iconColor": "#4F46E5",
-            "iconBackgroundColor": "#EEEDFD",
-            "cardBackgroundColor": "#FFFFFF",
-            "borderRadius": "12px",
-            "boxShadow": "0 1px 2px rgba(47, 38, 48, 0.04)"
-          },
-          {
-            "id": "ql-quotations",
-            "label": "Quotations",
-            "icon": "file-text",
-            "iconColor": "#059669",
-            "iconBackgroundColor": "#D1FAE5",
-            "cardBackgroundColor": "#FFFFFF",
-            "borderRadius": "12px"
-          },
-          {
-            "id": "ql-sales-orders",
-            "label": "Sales Orders",
-            "icon": "shopping-cart",
-            "iconColor": "#D97706",
-            "iconBackgroundColor": "#FEF3C7",
-            "cardBackgroundColor": "#FFFFFF",
-            "borderRadius": "12px"
-          }
-        ]
-      },
-      "components": {
-        "listView": {
-          "description": "Full-page list view for a reseller data section (e.g., Opportunities). Replaces the dashboard quick-links when a nav item is active.",
-          "backgroundColor": "#FFFFFF",
-          "borderRadius": "12px",
-          "boxShadow": "0 1px 2px rgba(47, 38, 48, 0.04)",
-          "pageHeader": {
-            "title": "Opportunities",
-            "subtitle": "All opportunities where you are the assigned reseller."
-          },
-          "toolbar": {
-            "description": "Single horizontal row above the table. Search bar takes up most of the row width; CTA button is pinned to the right.",
-            "searchBar": {
-              "placeholder": "Search",
-              "icon": "search",
-              "width": "flex-grow"
-            },
-            "ctaButton": {
-              "label": "+ New Opportunity",
-              "type": "button-cta",
-              "placement": "right"
-            }
-          },
-          "table": {
-            "description": "Borderless rows with a bottom divider only. Column headers carry a small data-type icon prefix.",
-            "columnHeaderIcons": {
-              "description": "Each column label is preceded by a small icon indicating its data type (text: T, tag/label, email envelope, phone handset).",
-              "examples": [
-                { "column": "Full Name", "headerIcon": "type-text" },
-                { "column": "Type", "headerIcon": "tag" },
-                { "column": "Email", "headerIcon": "mail" },
-                { "column": "Phone", "headerIcon": "phone" }
-              ]
-            },
-            "columns": [
-              { "key": "name",            "label": "Opportunity",      "headerIcon": "type-text" },
-              { "key": "partner_name",    "label": "Customer",         "headerIcon": "type-text" },
-              { "key": "expected_revenue","label": "Exp. Revenue",     "headerIcon": "type-text" },
-              { "key": "stage",          "label": "Stage",            "headerIcon": "tag" },
-              { "key": "email",          "label": "Email",            "headerIcon": "mail" },
-              { "key": "actions",        "label": "",                 "headerIcon": null }
-            ],
-            "emptyState": {
-              "icon": "inbox",
-              "message": "No results found.",
-              "hint": "Please adjust your filter.",
-              "hintContainsLink": true,
-              "alignment": "center"
-            }
-          },
-          "rowActions": [
-            {
-              "id": "btn-delete-opportunity",
-              "type": "button-icon-only",
-              "action": "delete"
-            }
-          ]
-        },
-        "createForm": {
-          "description": "Modal overlay for creating a new opportunity. Background is dimmed. Card sits centered.",
-          "type": "modal",
-          "backgroundColor": "#FFFFFF",
-          "borderRadius": "12px",
-          "width": "500px",
-          "backdrop": "rgba(0,0,0,0.35)",
-          "header": {
-            "title": "Create New Opportunity",
-            "closeButton": {
-              "description": "X icon positioned absolute top-right of the modal card",
-              "icon": "x",
-              "type": "button-icon-only"
-            }
-          },
-          "body": {
-            "inputStyle": {
-              "description": "Inputs use a light gray fill with no visible border (border: none, background: #F3F4F6). Label sits above the input in a smaller font weight.",
-              "background": "#F3F4F6",
-              "border": "none",
-              "borderRadius": "6px",
-              "padding": "10px 12px"
-            },
-            "layout": "single-column",
-            "fields": [
-              { "name": "name",             "label": "Opportunity Name", "type": "text",   "required": true },
-              { "name": "partner_id",       "label": "Customer",        "type": "select", "required": true },
-              { "name": "email",            "label": "Email",           "type": "email",  "required": false },
-              { "name": "phone",            "label": "Phone",           "type": "tel",    "required": false,
-                "prefixSelector": { "type": "country-code-dropdown", "default": "VN" }
-              },
-              { "name": "expected_revenue", "label": "Expected Revenue", "type": "number","required": false }
-            ]
-          },
-          "footer": {
-            "alignment": "right",
-            "actions": [
-              { "label": "Cancel", "type": "button-secondary" },
-              { "label": "Add",    "type": "button-cta" }
-            ]
-          }
-        },
-        "buttons": {
-          "ctaCreate": {
-            "description": "Primary Call to Action button for creating records",
-            "backgroundColor": "#714B67",
-            "textColor": "#FFFFFF",
-            "borderRadius": "6px",
-            "padding": "8px 16px",
-            "fontWeight": "500",
-            "hoverState": {
-              "opacity": "0.9"
-            }
-          },
-          "iconOnlyDelete": {
-            "description": "Minimal icon button for destructive actions inside table rows",
-            "icon": "trash-2",
-            "iconColor": "#EF4444",
-            "backgroundColor": "transparent",
-            "borderRadius": "6px",
-            "padding": "8px",
-            "hoverState": {
-              "backgroundColor": "#FEE2E2"
-            }
-          }
+        "elevation": {
+            "cardRadius": "12px",
+            "pillRadius": "999px",
+            "shadowSm": "0 1px 2px rgba(47, 38, 48, 0.04)"
         }
-      }
+    },
+    "layout": {
+        "type": "sidebar-layout",
+        "sidebar": {
+            "width": "250px",
+            "backgroundColor": "#FFFFFF",
+            "borderRight": "1px solid #E5E7EB",
+            "branding": {
+                "logoText": "Sun Inc.",
+                "context": "PARTNERS",
+                "placement": "top-left",
+                "collapsible": false
+            },
+            "activeItemStyle": {
+                "description": "Highlighted background on the currently active nav item",
+                "borderRadius": "6px",
+                "fontWeight": "600"
+            },
+            "navigation": [
+                {
+                    "id": "nav-dashboard",
+                    "label": "Dashboard",
+                    "icon": "home",
+                    "active": true
+                },
+                {
+                    "id": "nav-opportunities-group",
+                    "label": "Opportunities",
+                    "icon": "briefcase",
+                    "collapsible": true,
+                    "defaultExpanded": true,
+                    "children": [
+                        {
+                            "id": "nav-opportunities",
+                            "label": "All Opportunities",
+                            "icon": "list"
+                        }
+                    ]
+                },
+                {
+                    "id": "nav-sales-group",
+                    "label": "Sales",
+                    "icon": "shopping-cart",
+                    "collapsible": true,
+                    "defaultExpanded": false,
+                    "children": [
+                        {
+                            "id": "nav-quotations",
+                            "label": "Quotations",
+                            "icon": "file-text"
+                        },
+                        {
+                            "id": "nav-sales-orders",
+                            "label": "Sales Orders",
+                            "icon": "package"
+                        }
+                    ]
+                },
+                {
+                    "id": "nav-invoices",
+                    "label": "Invoices",
+                    "icon": "file-invoice"
+                },
+                { "id": "nav-customers", "label": "Customers", "icon": "users" }
+            ]
+        },
+        "mainContent": {
+            "backgroundColor": "#F8F6F8",
+            "padding": "24px",
+            "header": {
+                "title": "Partner Reseller Dashboard",
+                "description": "Manage your opportunities, quotations, sales orders, invoices, and customers.",
+                "actions": [
+                    {
+                        "id": "btn-create-opportunity",
+                        "type": "button-cta",
+                        "label": "New Opportunity",
+                        "icon": "plus"
+                    }
+                ]
+            },
+            "quickLinks": {
+                "description": "Navigation cards styled with icon and label (e.g., 'Deals' style)",
+                "display": "flex-row",
+                "gap": "16px",
+                "items": [
+                    {
+                        "id": "ql-opportunities",
+                        "label": "Opportunities",
+                        "icon": "diamond",
+                        "iconColor": "#4F46E5",
+                        "iconBackgroundColor": "#EEEDFD",
+                        "cardBackgroundColor": "#FFFFFF",
+                        "borderRadius": "12px",
+                        "boxShadow": "0 1px 2px rgba(47, 38, 48, 0.04)"
+                    },
+                    {
+                        "id": "ql-quotations",
+                        "label": "Quotations",
+                        "icon": "file-text",
+                        "iconColor": "#059669",
+                        "iconBackgroundColor": "#D1FAE5",
+                        "cardBackgroundColor": "#FFFFFF",
+                        "borderRadius": "12px"
+                    },
+                    {
+                        "id": "ql-sales-orders",
+                        "label": "Sales Orders",
+                        "icon": "shopping-cart",
+                        "iconColor": "#D97706",
+                        "iconBackgroundColor": "#FEF3C7",
+                        "cardBackgroundColor": "#FFFFFF",
+                        "borderRadius": "12px"
+                    }
+                ]
+            },
+            "components": {
+                "listView": {
+                    "description": "Full-page list view for a reseller data section (e.g., Opportunities). Replaces the dashboard quick-links when a nav item is active.",
+                    "backgroundColor": "#FFFFFF",
+                    "borderRadius": "12px",
+                    "boxShadow": "0 1px 2px rgba(47, 38, 48, 0.04)",
+                    "pageHeader": {
+                        "title": "Opportunities",
+                        "subtitle": "All opportunities where you are the assigned reseller."
+                    },
+                    "toolbar": {
+                        "description": "Single horizontal row above the table. Search bar takes up most of the row width; CTA button is pinned to the right.",
+                        "searchBar": {
+                            "placeholder": "Search",
+                            "icon": "search",
+                            "width": "flex-grow"
+                        },
+                        "ctaButton": {
+                            "label": "+ New Opportunity",
+                            "type": "button-cta",
+                            "placement": "right"
+                        }
+                    },
+                    "table": {
+                        "description": "Borderless rows with a bottom divider only. Column headers carry a small data-type icon prefix.",
+                        "columnHeaderIcons": {
+                            "description": "Each column label is preceded by a small icon indicating its data type (text: T, tag/label, email envelope, phone handset).",
+                            "examples": [
+                                {
+                                    "column": "Full Name",
+                                    "headerIcon": "type-text"
+                                },
+                                { "column": "Type", "headerIcon": "tag" },
+                                { "column": "Email", "headerIcon": "mail" },
+                                { "column": "Phone", "headerIcon": "phone" }
+                            ]
+                        },
+                        "columns": [
+                            {
+                                "key": "name",
+                                "label": "Opportunity",
+                                "headerIcon": "type-text"
+                            },
+                            {
+                                "key": "partner_name",
+                                "label": "Customer",
+                                "headerIcon": "type-text"
+                            },
+                            {
+                                "key": "expected_revenue",
+                                "label": "Exp. Revenue",
+                                "headerIcon": "type-text"
+                            },
+                            {
+                                "key": "stage",
+                                "label": "Stage",
+                                "headerIcon": "tag"
+                            },
+                            {
+                                "key": "email",
+                                "label": "Email",
+                                "headerIcon": "mail"
+                            },
+                            {
+                                "key": "actions",
+                                "label": "",
+                                "headerIcon": null
+                            }
+                        ],
+                        "emptyState": {
+                            "icon": "inbox",
+                            "message": "No results found.",
+                            "hint": "Please adjust your filter.",
+                            "hintContainsLink": true,
+                            "alignment": "center"
+                        }
+                    },
+                    "rowActions": [
+                        {
+                            "id": "btn-delete-opportunity",
+                            "type": "button-icon-only",
+                            "action": "delete"
+                        }
+                    ]
+                },
+                "createForm": {
+                    "description": "Modal overlay for creating a new opportunity. Background is dimmed. Card sits centered.",
+                    "type": "modal",
+                    "backgroundColor": "#FFFFFF",
+                    "borderRadius": "12px",
+                    "width": "500px",
+                    "backdrop": "rgba(0,0,0,0.35)",
+                    "header": {
+                        "title": "Create New Opportunity",
+                        "closeButton": {
+                            "description": "X icon positioned absolute top-right of the modal card",
+                            "icon": "x",
+                            "type": "button-icon-only"
+                        }
+                    },
+                    "body": {
+                        "inputStyle": {
+                            "description": "Inputs use a light gray fill with no visible border (border: none, background: #F3F4F6). Label sits above the input in a smaller font weight.",
+                            "background": "#F3F4F6",
+                            "border": "none",
+                            "borderRadius": "6px",
+                            "padding": "10px 12px"
+                        },
+                        "layout": "single-column",
+                        "fields": [
+                            {
+                                "name": "name",
+                                "label": "Opportunity Name",
+                                "type": "text",
+                                "required": true
+                            },
+                            {
+                                "name": "partner_id",
+                                "label": "Customer",
+                                "type": "select",
+                                "required": true
+                            },
+                            {
+                                "name": "email",
+                                "label": "Email",
+                                "type": "email",
+                                "required": false
+                            },
+                            {
+                                "name": "phone",
+                                "label": "Phone",
+                                "type": "tel",
+                                "required": false,
+                                "prefixSelector": {
+                                    "type": "country-code-dropdown",
+                                    "default": "VN"
+                                }
+                            },
+                            {
+                                "name": "expected_revenue",
+                                "label": "Expected Revenue",
+                                "type": "number",
+                                "required": false
+                            }
+                        ]
+                    },
+                    "footer": {
+                        "alignment": "right",
+                        "actions": [
+                            { "label": "Cancel", "type": "button-secondary" },
+                            { "label": "Add", "type": "button-cta" }
+                        ]
+                    }
+                },
+                "buttons": {
+                    "ctaCreate": {
+                        "description": "Primary Call to Action button for creating records",
+                        "backgroundColor": "#714B67",
+                        "textColor": "#FFFFFF",
+                        "borderRadius": "6px",
+                        "padding": "8px 16px",
+                        "fontWeight": "500",
+                        "hoverState": {
+                            "opacity": "0.9"
+                        }
+                    },
+                    "iconOnlyDelete": {
+                        "description": "Minimal icon button for destructive actions inside table rows",
+                        "icon": "trash-2",
+                        "iconColor": "#EF4444",
+                        "backgroundColor": "transparent",
+                        "borderRadius": "6px",
+                        "padding": "8px",
+                        "hoverState": {
+                            "backgroundColor": "#FEE2E2"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "businessRequirements": {
+        "userStory": "As an Asus reseller of Sun Inc., after logging into Sun Inc’s Partner Portal, I should be able to see...",
+        "dataScopes": [
+            "All opportunities created by me",
+            "All quotations where I am the reseller",
+            "All sales orders where I am the reseller",
+            "All invoices where I am the reseller",
+            "All customers where I am the reseller"
+        ],
+        "permissions": [
+            "Create new opportunities",
+            "Delete existing opportunities"
+        ]
     }
-  },
-  "businessRequirements": {
-    "userStory": "As an Asus reseller of Sun Inc., after logging into Sun Inc’s Partner Portal, I should be able to see...",
-    "dataScopes": [
-      "All opportunities created by me",
-      "All quotations where I am the reseller",
-      "All sales orders where I am the reseller",
-      "All invoices where I am the reseller",
-      "All customers where I am the reseller"
-    ],
-    "permissions": [
-      "Create new opportunities",
-      "Delete existing opportunities"
-    ]
-  }
 }

@@ -152,11 +152,11 @@ domain hooks would break the standard portal for non-reseller users.
 
 **Evaluated options for full paginated browsing:**
 
-| Option | Approach | Trade-off |
-| --- | --- | --- |
-| A — Extend SPA | Add per-section API pagination (`?page=N`) to existing JSON endpoints | Stays in current architecture; all browsing stays within the Owl app |
-| B — Odoo-native pages | Add server-rendered pages at `/my/reseller-portal/quotations`, etc. following `_prepare_sale_portal_rendering_values` pattern | Odoo-idiomatic pager, breadcrumbs, and sorting out of the box |
-| C — Hybrid | SPA for dashboard overview; deep links to dedicated server-rendered pages per section | Most flexible but highest maintenance |
+| Option                | Approach                                                                                                                      | Trade-off                                                            |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| A — Extend SPA        | Add per-section API pagination (`?page=N`) to existing JSON endpoints                                                         | Stays in current architecture; all browsing stays within the Owl app |
+| B — Odoo-native pages | Add server-rendered pages at `/my/reseller-portal/quotations`, etc. following `_prepare_sale_portal_rendering_values` pattern | Odoo-idiomatic pager, breadcrumbs, and sorting out of the box        |
+| C — Hybrid            | SPA for dashboard overview; deep links to dedicated server-rendered pages per section                                         | Most flexible but highest maintenance                                |
 
 **Phase 1 decision**: the SPA + 25-record limit is acceptable while total record counts stay
 small. When pagination becomes necessary, **Option A** (extending the existing JSON endpoints
@@ -173,13 +173,13 @@ extensions. Sales team and admins cannot see or set these fields through the BO 
 
 Minimum view coverage needed:
 
-| Model | View type | What to add |
-| --- | --- | --- |
-| `res.partner` | Form | `is_reseller` checkbox; `reseller_partner_id` (on customer forms) |
-| `crm.lead` | Form | `reseller_partner_id` field in a dedicated group/page |
-| `sale.order` | Form | `reseller_partner_id` field |
-| `account.move` | Form | `reseller_partner_id` field (customer invoices only) |
-| `res.partner` | List | Filter and optional column for `is_reseller` |
+| Model          | View type | What to add                                                       |
+| -------------- | --------- | ----------------------------------------------------------------- |
+| `res.partner`  | Form      | `is_reseller` checkbox; `reseller_partner_id` (on customer forms) |
+| `crm.lead`     | Form      | `reseller_partner_id` field in a dedicated group/page             |
+| `sale.order`   | Form      | `reseller_partner_id` field                                       |
+| `account.move` | Form      | `reseller_partner_id` field (customer invoices only)              |
+| `res.partner`  | List      | Filter and optional column for `is_reseller`                      |
 
 A dedicated **Resellers** menu item should list all partners where `is_reseller = True`. Placing
 it under `Contacts / Resellers` (or inside the Sales configuration menu) is the natural location.
@@ -277,14 +277,14 @@ An Owl component is justified when it encapsulates **reactive behavior that HTML
 provide**: managed state, lifecycle hooks, event coordination, keyboard navigation, or
 portal rendering.
 
-| Pattern | Right tool |
-| --- | --- |
-| Button colors, radius, hover states | SCSS + Bootstrap variable overrides |
-| Badge semantic colors (success / warning / danger) | `StatusBadge` Owl component |
-| Tab switching with count display | `DashboardTabBar` Owl component |
-| Record card layout | `RecordCard` Owl component (when used in 2+ tabs) |
-| Empty section placeholder | `EmptyState` Owl component |
-| Loading indicator | `LoadingSpinner` Owl component |
+| Pattern                                            | Right tool                                        |
+| -------------------------------------------------- | ------------------------------------------------- |
+| Button colors, radius, hover states                | SCSS + Bootstrap variable overrides               |
+| Badge semantic colors (success / warning / danger) | `StatusBadge` Owl component                       |
+| Tab switching with count display                   | `DashboardTabBar` Owl component                   |
+| Record card layout                                 | `RecordCard` Owl component (when used in 2+ tabs) |
+| Empty section placeholder                          | `EmptyState` Owl component                        |
+| Loading indicator                                  | `LoadingSpinner` Owl component                    |
 
 ### Naming
 

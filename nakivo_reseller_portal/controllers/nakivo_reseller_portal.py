@@ -57,9 +57,7 @@ class PartnerResellerPortalController(CustomerPortal, BaseRestHandler):
             values["reseller_portal_count"] = (
                 request.env["crm.lead"]
                 .sudo()
-                .search_count(
-                    request.env["crm.lead"]._reseller_portal_domain(partner)
-                )
+                .search_count(request.env["crm.lead"]._reseller_portal_domain(partner))
             )
         return values
 
@@ -171,7 +169,14 @@ class PartnerResellerPortalController(CustomerPortal, BaseRestHandler):
         opportunity.unlink()
         return self._make_success_response({"id": deleted_id, "deleted": True})
 
-    @route(f"{PORTAL_PAGE_ROUTE}", type="http", auth="user", website=True, sitemap=False, readonly=True)
+    @route(
+        f"{PORTAL_PAGE_ROUTE}",
+        type="http",
+        auth="user",
+        website=True,
+        sitemap=False,
+        readonly=True,
+    )
     def reseller_portal_page(self, **kwargs):
         self._ensure_portal_page_access()
         values = self._prepare_portal_layout_values()
@@ -300,9 +305,7 @@ class PartnerResellerPortalController(CustomerPortal, BaseRestHandler):
                 "sales_orders": sales_orders,
             }
         )
-        return request.render(
-            "nakivo_reseller_portal.portal_reseller_orders", values
-        )
+        return request.render("nakivo_reseller_portal.portal_reseller_orders", values)
 
     @route(
         f"{PORTAL_PAGE_ROUTE}/invoices",
@@ -327,9 +330,7 @@ class PartnerResellerPortalController(CustomerPortal, BaseRestHandler):
                 "invoices": invoices,
             }
         )
-        return request.render(
-            "nakivo_reseller_portal.portal_reseller_invoices", values
-        )
+        return request.render("nakivo_reseller_portal.portal_reseller_invoices", values)
 
     @route(
         f"{PORTAL_PAGE_ROUTE}/customers",

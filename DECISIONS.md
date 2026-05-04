@@ -10,6 +10,7 @@ This file is for reference and context — not a changelog.
 **Decision:** Use the Softr Partner Portal template as the primary UI reference for layout, navigation patterns, and component structure.
 
 **References:**
+
 - Live demo: https://partner-portal-sdb.softr.app/leads?show-toolbar=true
 - Template page: https://www.softr.io/templates/partner-portal
 
@@ -17,6 +18,7 @@ This file is for reference and context — not a changelog.
 The Softr partner portal (branded as "Mesh | PARTNERS") demonstrates a well-established UX pattern for B2B portals — flat sidebar navigation with collapsible groups, full-width list views with inline search + CTA toolbar, and modal-based create forms. These patterns are familiar to business users, require minimal learning, and map naturally onto Odoo's portal model.
 
 **What we borrowed:**
+
 - Sidebar nav structure: top-level items + collapsible groups with child links (e.g., People → Leads, Contacts)
 - Active nav item highlighted with a solid background accent chip
 - List page layout: page title + subtitle, then a toolbar row (search left / CTA right), then a typed-column table
@@ -25,6 +27,7 @@ The Softr partner portal (branded as "Mesh | PARTNERS") demonstrates a well-esta
 - Create modal: white card on dimmed backdrop, X close button top-right, gray-fill borderless inputs, single-column field layout, Cancel + primary Add footer
 
 **What we did NOT borrow:**
+
 - Color palette — we keep the DESIGN.md tokens (`#714B67` primary, `#F8F6F8` canvas, etc.)
 - Typography — we keep Inter as defined in DESIGN.md
 - Softr-specific branding, logo, or exact wording
@@ -36,6 +39,7 @@ The Softr partner portal (branded as "Mesh | PARTNERS") demonstrates a well-esta
 **Decision:** Build the frontend as an Owl SPA inside Odoo's standard portal shell, not as a separate React or Vue application.
 
 **Rationale:**
+
 - Reuses Odoo session auth, CSRF, and asset pipeline — no separate auth layer needed
 - Keeps deployment as a single addon install; no separate frontend server
 - Owl is Odoo 17+ standard; components integrate directly with QWeb templates

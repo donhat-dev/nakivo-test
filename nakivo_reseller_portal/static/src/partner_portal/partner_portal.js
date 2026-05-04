@@ -171,7 +171,7 @@ export class PartnerPortalRoot extends Component {
         const opps = this.state.dashboard.opportunities || [];
         const totalRevenue = opps.reduce(
             (sum, o) => sum + (o.expected_revenue || 0),
-            0
+            0,
         );
         const revenueLabel =
             "$" +
@@ -207,7 +207,7 @@ export class PartnerPortalRoot extends Component {
             opportunities: {
                 title: _t("Opportunities"),
                 subtitle: _t(
-                    "All opportunities where you are the assigned reseller."
+                    "All opportunities where you are the assigned reseller.",
                 ),
                 columns: [
                     { key: "name", label: _t("Opportunity"), headerIcon: "T" },
@@ -233,7 +233,7 @@ export class PartnerPortalRoot extends Component {
             quotations: {
                 title: _t("Quotations"),
                 subtitle: _t(
-                    "All quotations where you are listed as the reseller."
+                    "All quotations where you are listed as the reseller.",
                 ),
                 columns: [
                     { key: "name", label: _t("Quotation"), headerIcon: "T" },
@@ -260,7 +260,7 @@ export class PartnerPortalRoot extends Component {
             sales_orders: {
                 title: _t("Sales Orders"),
                 subtitle: _t(
-                    "All sales orders where you are listed as the reseller."
+                    "All sales orders where you are listed as the reseller.",
                 ),
                 columns: [
                     { key: "name", label: _t("Order"), headerIcon: "T" },
@@ -287,7 +287,7 @@ export class PartnerPortalRoot extends Component {
             invoices: {
                 title: _t("Invoices"),
                 subtitle: _t(
-                    "All invoices where you are listed as the reseller."
+                    "All invoices where you are listed as the reseller.",
                 ),
                 columns: [
                     { key: "name", label: _t("Invoice"), headerIcon: "T" },
@@ -318,7 +318,7 @@ export class PartnerPortalRoot extends Component {
             customers: {
                 title: _t("Customers"),
                 subtitle: _t(
-                    "All customers where you are listed as the reseller."
+                    "All customers where you are listed as the reseller.",
                 ),
                 columns: [
                     { key: "name", label: _t("Name"), headerIcon: "T" },
@@ -356,12 +356,11 @@ export class PartnerPortalRoot extends Component {
         this.state.loading = true;
         try {
             const result = await this.http.get(
-                `${this.props.apiBasePath}/dashboard`
+                `${this.props.apiBasePath}/dashboard`,
             );
             if (!result || result.success !== true) {
                 throw new Error(
-                    result?.error?.message ||
-                        _t("Unable to load portal data.")
+                    result?.error?.message || _t("Unable to load portal data."),
                 );
             }
             this.state.dashboard = this._normalizeDashboard(result.data || {});
