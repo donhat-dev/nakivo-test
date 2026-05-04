@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="nakivo_reseller_portal.PartnerPortalRoot">
+        <div class="o_nakivo_reseller_portal">
+            <div class="row g-4">
+                <div class="col-xl-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h2 class="h5 mb-1">Create opportunity</h2>
+                                    <p class="text-muted small mb-0">
+                                        New opportunities are automatically assigned to the authenticated reseller.
+                                    </p>
+                                </div>
+                                <span class="badge rounded-pill text-bg-light">Secure</span>
+                            </div>
+
+                            <form class="o_nakivo_reseller_portal_form" t-on-submit.prevent="createOpportunity">
+                                <div class="mb-3">
+                                    <label class="form-label" for="reseller_opportunity_name">Opportunity name</label>
+                                    <input
+                                        id="reseller_opportunity_name"
+                                        class="form-control"
+                                        type="text"
+                                        required="required"
+                                        t-model="state.form.name"
+                                    />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="reseller_partner_id">Customer</label>
+                                    <select
+                                        id="reseller_partner_id"
+                                        class="form-select"
+                                        t-model="state.form.partner_id"
+                                    >
+                                        <option value="">Select a customer</option>
+                                        <t t-foreach="state.dashboard.customers" t-as="customer" t-key="customer.id">
+                                            <option t-att-value="customer.id">
+                                                <t t-esc="customer.name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                    <p t-if="!hasCustomers" class="form-text mb-0">
+                                        Customer options appear after customer records are linked to this reseller.
+                                    </p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="reseller_expected_revenue">Expected revenue</label>
+                                    <input
+                                        id="reseller_expected_revenue"
+                                        class="form-control"
+                                        type="number"
+                                        min="0"
+                                        step="0.01"
+                                        t-model="state.form.expected_revenue"
+                                    />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="reseller_description">Description</label>
+                                    <textarea
+                                        id="reseller_description"
+                                        class="form-control"
+                                        rows="4"
+                                        t-model="state.form.description"
+                                    />
+                                </div>
+                                <button
+                                    class="btn btn-primary w-100"
+                                    type="submit"
+                                    t-att-disabled="state.submitting"
+                                >
+                                    <t t-if="state.submitting">Creating...</t>
+                                    <t t-else="">Create opportunity</t>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-8">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <div class="d-flex flex-wrap gap-2 mb-4">
+                                <t t-foreach="tabs" t-as="tab" t-key="tab.id">
+                                    <button
+                                        type="button"
+                                        t-att-class="getTabButtonClass(tab.id)"
+                                        t-att-data-tab="tab.id"
+                                        t-on-click="onClickTab"
+                                    >
+                                        <span class="me-2"><t t-esc="tab.label"/></span>
+                                        <span class="badge rounded-pill text-bg-light"><t t-esc="tab.count"/></span>
+                                    </button>
+                                </t>
+                            </div>
+
+                            <div t-if="state.error" class="alert alert-danger" role="alert">
+                                <t t-esc="state.error"/>
+                            </div>
+
+                            <div t-if="state.loading" class="o_nakivo_reseller_portal_loading py-5 text-center text-muted">
+                                Loading portal data...
+                            </div>
+
+                            <div t-elif="!currentItems.length" class="o_nakivo_reseller_portal_empty py-5 text-center text-muted">
+                                No records are available in this section yet.
+                            </div>
+
+                            <div t-else="" class="o_nakivo_reseller_portal_list d-grid gap-3">
+                                <t t-foreach="currentItems" t-as="record" t-key="record.id">
+                                    <article class="o_nakivo_reseller_portal_record card">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+                                                <div>
+                                                    <h3 class="h6 mb-1"><t t-esc="record.name"/></h3>
+                                                    <p t-if="record.partner_name" class="text-muted mb-1">
+                                                        <t t-esc="record.partner_name"/>
+                                                    </p>
+                                                    <p t-if="record.email" class="text-muted mb-1">
+                                                        <t t-esc="record.email"/>
+                                                    </p>
+                                                    <div class="small text-muted d-flex flex-wrap gap-3">
+                                                        <span t-if="record.stage_name">Stage: <t t-esc="record.stage_name"/></span>
+                                                        <span t-if="record.state">State: <t t-esc="record.state"/></span>
+                                                        <span t-if="record.payment_state">Payment: <t t-esc="record.payment_state"/></span>
+                                                        <span t-if="record.date_deadline">Deadline: <t t-esc="record.date_deadline"/></span>
+                                                        <span t-if="record.date_order">Date: <t t-esc="record.date_order"/></span>
+                                                        <span t-if="record.invoice_date">Invoice date: <t t-esc="record.invoice_date"/></span>
+                                                        <span t-if="record.city">City: <t t-esc="record.city"/></span>
+                                                        <span t-if="record.country_name">Country: <t t-esc="record.country_name"/></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="text-end">
+                                                    <div t-if="record.amount_total !== undefined" class="fw-semibold mb-2">
+                                                        <t t-esc="formatAmount(record.amount_total, record.currency_name)"/>
+                                                    </div>
+                                                    <div t-if="record.expected_revenue !== undefined" class="fw-semibold mb-2">
+                                                        <t t-esc="formatAmount(record.expected_revenue, '')"/>
+                                                    </div>
+
+                                                    <t t-if="state.activeTab === 'opportunities'">
+                                                        <t t-if="state.confirmingDeleteId === record.id">
+                                                            <div class="d-flex gap-2 justify-content-end">
+                                                                <button
+                                                                    type="button"
+                                                                    class="btn btn-danger btn-sm"
+                                                                    t-att-disabled="state.deletingId === record.id"
+                                                                    t-on-click="confirmDelete"
+                                                                >
+                                                                    <t t-if="state.deletingId === record.id">Deleting...</t>
+                                                                    <t t-else="">Confirm delete</t>
+                                                                </button>
+                                                                <button
+                                                                    type="button"
+                                                                    class="btn btn-outline-secondary btn-sm"
+                                                                    t-on-click="cancelDelete"
+                                                                >Cancel</button>
+                                                            </div>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <button
+                                                                type="button"
+                                                                class="btn btn-outline-danger btn-sm"
+                                                                t-att-data-id="record.id"
+                                                                t-on-click="requestDeleteConfirm"
+                                                            >Delete</button>
+                                                        </t>
+                                                    </t>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </article>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>
