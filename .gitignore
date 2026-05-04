@@ -172,9 +172,13 @@ cython_debug/
 .pre-commit-cache/
 .eslintcache
 .pylint.d/
+docker/logs/
 
 # PyPI configuration file
 .pypirc
+
+# Brainstorm sessions
+.superpowers/
 
 # Cursor
 #  Cursor is an AI-powered code editor.`.cursorignore` specifies files/directories to

@@ -11,8 +11,8 @@ Authenticated reseller portal built on **Odoo 19 Community Edition** with an Odo
 
 This repository is currently organized around two related addons:
 
-- `base_rest_api/` — reusable Pydantic-first REST primitives for Odoo addons
-- `partner_reseller_portal/` — reseller-specific portal UI, business logic, and API endpoints
+- `nakivo_base_rest/` — reusable Pydantic-first REST primitives for Odoo addons
+- `nakivo_reseller_portal/` — reseller-specific portal UI, business logic, and API endpoints
 
 The implementation follows a deliberately simple architecture:
 
@@ -35,9 +35,11 @@ Backend resolves reseller from the session and enforces ownership
 ```text
 nakivo-test/
 ├── .github/                     # instructions + CI workflows
-├── base_rest_api/               # shared REST foundation addon
+├── docker/                      # local Odoo/Postgres compose config
+├── Dockerfile                   # Odoo 19 image with runtime requirements
+├── nakivo_base_rest/            # shared REST foundation addon
 ├── docs/                        # project conventions, API, security, design notes
-├── partner_reseller_portal/     # reseller portal addon
+├── nakivo_reseller_portal/      # reseller portal addon
 ├── .editorconfig
 ├── .pre-commit-config.yaml
 ├── .pylintrc
@@ -50,7 +52,7 @@ nakivo-test/
 
 ## Addons
 
-### `base_rest_api`
+### `nakivo_base_rest`
 
 Provides shared API primitives:
 
@@ -60,7 +62,7 @@ Provides shared API primitives:
 - standardized success and error envelopes
 - semantic error codes with numeric values
 
-### `partner_reseller_portal`
+### `nakivo_reseller_portal`
 
 Implements the reseller-facing flow:
 
@@ -123,6 +125,15 @@ Install runtime dependency:
 python3 -m pip install -r requirements.txt
 ```
 
+For Docker-based local development, the compose stack builds the repository
+`Dockerfile`, installs `requirements.txt`, and writes Odoo logs to
+`docker/logs/odoo-server.log` with logrotate configured:
+
+```bash
+cd docker
+docker compose up -d --build
+```
+
 ### Development tooling
 
 Install development tooling for local quality checks:
@@ -151,15 +162,15 @@ pre-commit run --all-files
 Quick syntax validation for both addons:
 
 ```bash
-python3 -m compileall base_rest_api partner_reseller_portal
+python3 -m compileall nakivo_base_rest nakivo_reseller_portal
 ```
 
 ## Current status
 
 The repository already contains:
 
-- the generic `base_rest_api` addon
-- the first implementation of `partner_reseller_portal`
+- the generic `nakivo_base_rest` addon
+- the first implementation of `nakivo_reseller_portal`
 - architecture, API, security, and design documentation
 - root-level lint and GitHub workflow scaffolding
 

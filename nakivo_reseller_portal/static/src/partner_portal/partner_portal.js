@@ -199,7 +199,6 @@ export class PartnerPortalRoot extends Component {
         if (!opportunityId) {
             return;
         }
-        this.state.confirmingDeleteId = null;
         this.state.error = "";
         this.state.deletingId = opportunityId;
         try {
@@ -212,6 +211,7 @@ export class PartnerPortalRoot extends Component {
             this.state.error =
                 error.message || _t("Unable to delete the opportunity.");
         } finally {
+            this.state.confirmingDeleteId = null;
             this.state.deletingId = null;
         }
     }

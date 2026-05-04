@@ -3,7 +3,7 @@
 ## Purpose
 
 This file captures project-level architecture, scope, and implementation conventions.
-Shared generic REST primitives live in the standalone `base_rest_api` addon.
+Shared generic REST primitives live in the standalone `nakivo_base_rest` addon.
 
 ## Product goal
 
@@ -18,12 +18,12 @@ Build an authenticated reseller portal on Odoo 19 Community Edition with an Odoo
 
 The repository is currently oriented around two addons:
 
-- `base_rest_api` for shared generic REST primitives
-- `partner_reseller_portal` for reseller-specific business logic and portal UI
+- `nakivo_base_rest` for shared generic REST primitives
+- `nakivo_reseller_portal` for reseller-specific business logic and portal UI
 
 ### Chosen stack
 
-- **Shared API foundation:** standalone `base_rest_api` addon with Pydantic-first generic REST primitives
+- **Shared API foundation:** standalone `nakivo_base_rest` addon with Pydantic-first generic REST primitives
 - **Backend:** Odoo ORM, controllers, XML/QWeb
 - **Frontend:** Owl components, XML templates, SCSS, Odoo asset bundles
 - **Authentication:** existing Odoo session and portal login flow
@@ -60,7 +60,7 @@ Backend resolves current reseller from session and enforces ownership
 ## Expected addon structure
 
 ```text
-base_rest_api/
+nakivo_base_rest/
 ├── __init__.py
 ├── __manifest__.py
 ├── error_codes.py
@@ -68,7 +68,7 @@ base_rest_api/
 ├── handler.py
 └── schemas.py
 
-partner_reseller_portal/
+nakivo_reseller_portal/
 ├── __init__.py
 ├── __manifest__.py
 ├── controllers/
@@ -104,13 +104,61 @@ The first portal UI should stay intentionally simple:
 
 A single initial dashboard fetch is acceptable for the first version if payload size stays reasonable.
 
-See `docs/design.md` for the frontend look-and-feel contract that coding agents should follow.
+See `DESIGN.md` for the frontend look-and-feel contract that coding agents should follow.
+
+## Frontend component philosophy
+
+### Build order
+
+1. **CSS token layer first** — translate `DESIGN.md` tokens into CSS custom properties and
+   Bootstrap variable overrides before writing any component. Without this, every component
+   embeds hardcoded magic values.
+2. **Decompose the screen into business-semantic Owl components** — identify boundaries from
+   the actual screen, not from an abstract atom inventory.
+3. **Extract generic components only at the second occurrence** — a shared component earns
+   its existence when the same rendering pattern with different data appears in two or more
+   places.
+
+### What belongs in an Owl component vs CSS
+
+An Owl component is justified when it encapsulates **reactive behavior that HTML alone cannot
+provide**: managed state, lifecycle hooks, event coordination, keyboard navigation, or
+portal rendering.
+
+Visual primitives (button shape, badge color, border radius) are handled by CSS custom
+properties and Bootstrap utilities. Wrapping `<button class="btn btn-primary">` in an Owl
+component is over-engineering — it adds indirection without adding behavior.
+
+Concrete examples for this project:
+
+| Pattern | Right tool |
+| --- | --- |
+| Button colors, radius, hover states | SCSS + Bootstrap variable overrides |
+| Badge semantic colors (success / warning / danger) | `StatusBadge` Owl component — maps raw string state to visual token |
+| Tab switching with count display | `DashboardTabBar` Owl component — owns `activeTab` state and badge counts |
+| Record card layout | `RecordCard` Owl component — when the same card structure appears across 2+ tabs with different fields |
+| Empty section placeholder | `EmptyState` Owl component — reused across all five tab sections |
+| Loading indicator | `LoadingSpinner` Owl component — reused in dashboard load and per-action feedback |
+
+### Odoo-native component naming
+
+Follow Odoo's own convention: name components after the business concept they render, not
+after the generic UI pattern they resemble.
+
+- `RecordCard`, not `Card`
+- `DashboardTabBar`, not `Tabs`
+- `StatusBadge`, not `Badge`
+- `OpportunityForm`, not `Form`
+
+Generic names (`Dropdown`, `Dialog`, `Pager`) are reserved for components that are
+genuinely domain-agnostic and reusable across any Odoo addon — the same bar Odoo's own
+framework applies.
 
 ## REST foundation direction
 
-The generic REST layer is intentionally isolated in `base_rest_api`.
+The generic REST layer is intentionally isolated in `nakivo_base_rest`.
 
-- generic request parsing, validation hooks, response envelopes, and generic exception handling belong in `base_rest_api`
+- generic request parsing, validation hooks, response envelopes, and generic exception handling belong in `nakivo_base_rest`
 - domain-specific schemas, serializers, and business error codes belong in the business addon
 - this keeps the portal addon thinner and makes the REST foundation reusable in future addons
 
@@ -160,7 +208,7 @@ See `docs/security.md` for the strict rules.
 
 These are reasonable defaults, but they should be confirmed before the full implementation is locked in:
 
-1. keep the technical business addon name as `partner_reseller_portal`
-2. keep the reusable REST foundation in a standalone addon named `base_rest_api`
+1. keep the technical business addon name as `nakivo_reseller_portal`
+2. keep the reusable REST foundation in a standalone addon named `nakivo_base_rest`
 3. use standard portal authentication plus one dedicated reseller group for phase 1 access control
 4. keep the first dashboard implementation either single-fetch or low-complexity lazy tabs, whichever stays simpler after scaffolding

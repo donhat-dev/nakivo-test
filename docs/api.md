@@ -104,15 +104,15 @@ Odoo `type='jsonrpc'` is intentionally avoided for these endpoints because it wr
 
 ## Error codes and exception strategy
 
-- Generic error codes and generic API exceptions should live in the standalone `base_rest_api` addon.
+- Generic error codes and generic API exceptions should live in the standalone `nakivo_base_rest` addon.
 - Domain-specific error codes should live in the business addon that owns the resource.
 - Odoo business exceptions and request-validation failures should be mapped into the standard API envelope.
 - Unexpected server failures must be sanitized before they reach the client.
 
 Recommended split:
 
-- `base_rest_api` owns generic codes such as `BAD_REQUEST`, `INVALID_REQUEST_PAYLOAD`, `AUTHENTICATION_REQUIRED`, `ACCESS_DENIED`, `RESOURCE_NOT_FOUND`, `RESOURCE_CONFLICT`, `INTERNAL_SERVER_ERROR`
-- `partner_reseller_portal` owns domain codes such as `OPPORTUNITY_NOT_FOUND`
+- `nakivo_base_rest` owns generic codes such as `BAD_REQUEST`, `INVALID_REQUEST_PAYLOAD`, `AUTHENTICATION_REQUIRED`, `ACCESS_DENIED`, `RESOURCE_NOT_FOUND`, `RESOURCE_CONFLICT`, `INTERNAL_SERVER_ERROR`
+- `nakivo_reseller_portal` owns domain codes such as `OPPORTUNITY_NOT_FOUND`
 
 ## Typing and validation
 
@@ -296,7 +296,7 @@ Recommended status mapping:
 
 Recommended layering:
 
-- generic request schemas, response helpers, and exception mapping belong in `base_rest_api`
+- generic request schemas, response helpers, and exception mapping belong in `nakivo_base_rest`
 - route-specific request schemas remain in the business addon
 - resource-specific errors such as opportunity-not-found remain in the business addon
 

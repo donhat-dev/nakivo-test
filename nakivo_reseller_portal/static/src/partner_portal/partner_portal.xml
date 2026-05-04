@@ -4,7 +4,7 @@
         <div class="o_nakivo_reseller_portal">
             <div class="row g-4">
                 <div class="col-xl-4">
-                    <div class="card border-0 shadow-sm h-100">
+                    <div class="card h-100">
                         <div class="card-body p-4">
                             <div class="d-flex justify-content-between align-items-start mb-3">
                                 <div>
@@ -79,7 +79,7 @@
                 </div>
 
                 <div class="col-xl-8">
-                    <div class="card border-0 shadow-sm h-100">
+                    <div class="card h-100">
                         <div class="card-body p-4">
                             <div class="d-flex flex-wrap gap-2 mb-4">
                                 <t t-foreach="tabs" t-as="tab" t-key="tab.id">
@@ -147,6 +147,7 @@
                                                                     type="button"
                                                                     class="btn btn-danger btn-sm"
                                                                     t-att-disabled="state.deletingId === record.id"
+                                                                    t-att-aria-label="'Confirm delete of ' + record.name"
                                                                     t-on-click="confirmDelete"
                                                                 >
                                                                     <t t-if="state.deletingId === record.id">Deleting...</t>
@@ -164,6 +165,7 @@
                                                                 type="button"
                                                                 class="btn btn-outline-danger btn-sm"
                                                                 t-att-data-id="record.id"
+                                                                t-att-aria-label="'Delete ' + record.name"
                                                                 t-on-click="requestDeleteConfirm"
                                                             >Delete</button>
                                                         </t>

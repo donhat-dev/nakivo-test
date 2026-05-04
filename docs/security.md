@@ -87,7 +87,7 @@ Be careful when mixing global rules and group rules; overlapping global rules ca
 
 ## API exception and error-code guidance
 
-- Generic API-facing exceptions should be centralized in `base_rest_api` instead of being handcrafted in each controller.
+- Generic API-facing exceptions should be centralized in `nakivo_base_rest` instead of being handcrafted in each controller.
 - Known failures should map to stable application codes exposed to clients.
 - Business addons may define specific exceptions and error codes for resource-specific failures.
 - Error messages may be localized for end users, but error codes must remain stable and language-independent.

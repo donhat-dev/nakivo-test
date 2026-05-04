@@ -25,14 +25,19 @@ repos:
     rev: d4657f8c17a576d0c56c68064e199545ee75db52
     hooks:
       - id: oca-fix-manifest-website
-        args: ["https://github.com/donhat-nakivo/nakivo-test"]
+        args: ["https://github.com/donhat-dev/nakivo-test"]
       - id: oca-gen-addon-readme
         args:
           - --repo-name=nakivo-test
-          - --org-name=donhat-nakivo
+          - --org-name=donhat-dev
           - --branch=main
+          - --addons-dir=.
+          - --if-source-changed
+          - --keep-source-digest
+          - --convert-fragments-to-markdown
       - id: oca-gen-addon-icon
-      - id: oca-gen-external-dependencies
+        args:
+          - --addons-dir=.
   - repo: https://github.com/OCA/odoo-pre-commit-hooks
     rev: v0.0.33
     hooks:

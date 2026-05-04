@@ -130,7 +130,7 @@ Backend filters data by reseller
 Create module:
 
 ```
-partner_reseller_portal/
+nakivo_reseller_portal/
 ```
 
 Required structure:
