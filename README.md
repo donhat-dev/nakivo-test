@@ -164,14 +164,3 @@ Quick syntax validation for both addons:
 ```bash
 python3 -m compileall nakivo_base_rest nakivo_reseller_portal
 ```
-
-## Current status
-
-The repository already contains:
-
-- the generic `nakivo_base_rest` addon
-- the first implementation of `nakivo_reseller_portal`
-- architecture, API, security, and design documentation
-- root-level lint and GitHub workflow scaffolding
-
-The project is intentionally optimized for correctness and simplicity over framework sprawl. Fancy is optional; secure is not.

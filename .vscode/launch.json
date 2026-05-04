@@ -1,0 +1,26 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Odoo: Attach (Docker)",
+      "type": "debugpy",
+      "request": "attach",
+      "connect": {
+        "host": "localhost",
+        "port": 5678
+      },
+      "pathMappings": [
+        {
+          "localRoot": "${workspaceFolder}/nakivo_base_rest",
+          "remoteRoot": "/mnt/extra-addons/nakivo_base_rest"
+        },
+        {
+          "localRoot": "${workspaceFolder}/nakivo_reseller_portal",
+          "remoteRoot": "/mnt/extra-addons/nakivo_reseller_portal"
+        },
+      ],
+      "justMyCode": false,
+      "django": false
+    }
+  ]
+}
