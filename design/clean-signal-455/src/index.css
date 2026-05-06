@@ -1,0 +1,166 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+    --primary: 225 100% 50%;
+    --accent: 168 70% 42%;
+    --surface: 220 14% 96%;
+    --border: 220 13% 91%;
+    --radius: 0px;
+    font-family: "Space Grotesk", system-ui, sans-serif;
+    color: #101827;
+    background: #ffffff;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-width: 320px;
+    min-height: 100dvh;
+    margin: 0;
+    background: radial-gradient(
+            circle at 12% 8%,
+            rgba(0, 76, 255, 0.12),
+            transparent 28rem
+        ),
+        radial-gradient(
+            circle at 88% 18%,
+            rgba(33, 183, 153, 0.14),
+            transparent 26rem
+        ),
+        linear-gradient(180deg, #ffffff 0%, #f7f9fc 48%, #ffffff 100%);
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+::selection {
+    color: #ffffff;
+    background: #004cff;
+}
+
+.signal-noise {
+    background-image: linear-gradient(
+            rgba(16, 24, 39, 0.035) 1px,
+            transparent 1px
+        ),
+        linear-gradient(90deg, rgba(16, 24, 39, 0.035) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.85),
+        transparent 72%
+    );
+}
+
+.reveal {
+    opacity: 0;
+    transform: translate3d(0, 64px, 0);
+    filter: blur(12px);
+}
+
+.bezel {
+    border-radius: 0;
+    background: rgba(16, 24, 39, 0.045);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.9),
+        0 28px 70px -46px rgba(0, 76, 255, 0.45);
+    padding: 6px;
+}
+
+.bezel-core {
+    border-radius: 0;
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.95);
+}
+
+.signal-marquee {
+    animation: signal-marquee 26s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+}
+
+.scanline {
+    position: relative;
+    overflow: hidden;
+}
+
+.scanline::after {
+    position: absolute;
+    inset: 0;
+    content: "";
+    background: linear-gradient(
+        110deg,
+        transparent 0%,
+        transparent 35%,
+        rgba(33, 183, 153, 0.16) 48%,
+        transparent 60%,
+        transparent 100%
+    );
+    transform: translate3d(-120%, 0, 0);
+    animation: scanline 3.8s cubic-bezier(0.32, 0.72, 0, 1) infinite;
+    pointer-events: none;
+}
+
+.signal-word {
+    opacity: 0.18;
+}
+
+@keyframes signal-marquee {
+    from {
+        transform: translate3d(0, 0, 0);
+    }
+    to {
+        transform: translate3d(-50%, 0, 0);
+    }
+}
+
+@keyframes scanline {
+    0% {
+        transform: translate3d(-120%, 0, 0);
+    }
+    52%,
+    100% {
+        transform: translate3d(120%, 0, 0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .reveal {
+        opacity: 1;
+        transform: none;
+        filter: none;
+    }
+}

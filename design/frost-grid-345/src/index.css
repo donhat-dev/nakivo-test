@@ -1,0 +1,117 @@
+@import url("https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    * {
+        box-sizing: border-box;
+        border-radius: 0 !important;
+    }
+
+    html {
+        min-width: 320px;
+        background: #ffffff;
+        color: #121820;
+        scroll-behavior: smooth;
+    }
+
+    body {
+        margin: 0;
+        min-width: 320px;
+        min-height: 100vh;
+        background: #ffffff;
+        color: #121820;
+        font-family: "Geist Mono", "IBM Plex Mono", ui-monospace, monospace;
+        font-synthesis: none;
+        text-rendering: geometricPrecision;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 40;
+        pointer-events: none;
+        opacity: 0.052;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.58'/%3E%3C/svg%3E");
+        mix-blend-mode: multiply;
+    }
+
+    #root {
+        min-height: 100svh;
+    }
+
+    a,
+    button {
+        color: inherit;
+    }
+
+    button {
+        cursor: pointer;
+    }
+
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible {
+        outline: 2px solid #8fd3ff;
+        outline-offset: 2px;
+    }
+
+    ::selection {
+        background: #8fd3ff;
+        color: #121820;
+    }
+}
+
+@layer utilities {
+    .frost-shell {
+        background: linear-gradient(
+                90deg,
+                rgba(143, 211, 255, 0.09) 1px,
+                transparent 1px
+            ),
+            linear-gradient(
+                0deg,
+                rgba(143, 211, 255, 0.075) 1px,
+                transparent 1px
+            ),
+            #ffffff;
+        background-size: 48px 48px;
+    }
+
+    .ambient-plane {
+        position: absolute;
+        pointer-events: none;
+        filter: blur(70px);
+        transform: translateZ(0);
+        opacity: 0.44;
+        background: #8fd3ff;
+    }
+
+    .marquee-mask {
+        mask-image: linear-gradient(
+            90deg,
+            transparent,
+            #000 8%,
+            #000 92%,
+            transparent
+        );
+    }
+
+    .text-balance {
+        text-wrap: balance;
+    }
+
+    .portal-hairline {
+        background-image: linear-gradient(
+            90deg,
+            rgba(36, 107, 149, 0.14) 1px,
+            transparent 1px
+        );
+        background-size: 14px 100%;
+    }
+}

@@ -1,0 +1,96 @@
+@import url("https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --background: 130 13% 4%;
+        --foreground: 38 43% 93%;
+        --card: 128 12% 7%;
+        --card-foreground: 38 43% 93%;
+        --primary: 75 100% 67%;
+        --primary-foreground: 132 18% 7%;
+        --secondary: 13 100% 66%;
+        --secondary-foreground: 30 80% 96%;
+        --muted: 126 9% 13%;
+        --muted-foreground: 42 15% 70%;
+        --accent: 166 73% 63%;
+        --accent-foreground: 132 18% 7%;
+        --border: 42 20% 88% / 0.16;
+        --input: 42 20% 88% / 0.18;
+        --ring: 75 100% 67%;
+        --radius: 0.5rem;
+    }
+
+    * {
+        @apply border-border;
+    }
+
+    html {
+        scroll-behavior: smooth;
+        background: hsl(var(--background));
+    }
+
+    body {
+        @apply m-0 bg-background font-sans text-foreground antialiased;
+        font-synthesis: none;
+        letter-spacing: 0;
+        text-rendering: optimizeLegibility;
+    }
+
+    body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        pointer-events: none;
+        opacity: 0.07;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+        mix-blend-mode: overlay;
+    }
+
+    #root {
+        min-height: 100svh;
+    }
+
+    img {
+        max-width: 100%;
+    }
+}
+
+@layer utilities {
+    .app-shell {
+        background: radial-gradient(
+                circle at 18% 6%,
+                rgba(215, 255, 85, 0.12),
+                transparent 28rem
+            ),
+            radial-gradient(
+                circle at 86% 22%,
+                rgba(255, 107, 74, 0.1),
+                transparent 31rem
+            ),
+            linear-gradient(
+                135deg,
+                rgba(9, 13, 10, 1),
+                rgba(14, 13, 10, 1) 46%,
+                rgba(5, 8, 7, 1)
+            );
+    }
+
+    .text-balance {
+        text-wrap: balance;
+    }
+
+    .marquee-mask {
+        mask-image: linear-gradient(
+            90deg,
+            transparent,
+            #000 12%,
+            #000 88%,
+            transparent
+        );
+    }
+}
