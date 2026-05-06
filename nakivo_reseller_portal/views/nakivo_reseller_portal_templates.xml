@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <template id="web_login_reseller_portal_cta" inherit_id="web.login_oauth" name="Web Login Reseller Portal CTA">
+        <xpath expr="//t[@t-set='auth_btns']" position="after">
+            <t t-set="portal_btn_label">Login to Reseller Portal</t>
+            <t t-set="portal_btn"
+               t-value="[] if request.params.get('reseller_portal_login') else [{'css_class': 'fa fa-th-large', 'body': portal_btn_label, 'auth_link': '/my/reseller-portal/login', 'list_item_class': 'reseller_portal_login_link'}]"
+            />
+            <t t-set="auth_btns" t-value="auth_btns + portal_btn"/>
+        </xpath>
+    </template>
+
     <template id="portal_frontend_layout_inter_font" inherit_id="portal.frontend_layout" name="Portal Inter Font">
         <xpath expr="//head" position="inside">
             <link rel="preconnect" href="https://fonts.googleapis.com/"/>

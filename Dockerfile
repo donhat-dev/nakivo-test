@@ -1,5 +1,23 @@
 # syntax=docker/dockerfile:1.7
 
+# ─── Stage 1: build the React SPA ────────────────────────────────────────────
+FROM node:20-alpine AS frontend-build
+
+WORKDIR /workspace
+
+# Copy only package files first for better layer caching.
+COPY frontend/package*.json ./frontend/
+RUN cd frontend && npm ci --prefer-offline
+
+# Copy the rest of the frontend source and build.
+# The vite.config.ts outDir is '../nakivo_reseller_portal/static/react',
+# so we create that sibling directory before running the build.
+COPY frontend/ ./frontend/
+RUN mkdir -p nakivo_reseller_portal/static/react \
+    && cd frontend && npm run build
+# Output: /workspace/nakivo_reseller_portal/static/react/index.html
+
+# ─── Stage 2: base Odoo image ─────────────────────────────────────────────────
 FROM odoo:19 AS base
 
 USER root
@@ -31,8 +49,18 @@ RUN chmod 755 /entrypoint.sh \
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["odoo"]
 
+# ─── Stage 3: production ──────────────────────────────────────────────────────
 FROM base AS production
 
+# Embed the built React SPA into the addon static directory.
+# In docker-compose the addon dirs are volume-mounted, so local builds
+# (npm run build from frontend/) are picked up without rebuilding the image.
+# The COPY here is for CI/CD pipelines that build and ship the image directly.
+COPY --from=frontend-build \
+    /workspace/nakivo_reseller_portal/static/react/index.html \
+    /mnt/extra-addons/nakivo_reseller_portal/static/react/index.html
+
+# ─── Stage 4: debug ───────────────────────────────────────────────────────────
 FROM base AS debug
 
 RUN pip3 install --no-cache-dir --break-system-packages --ignore-installed debugpy

@@ -21,27 +21,21 @@ Authenticated reseller portal built on Odoo 19 Community Edition with React SPA 
 
 ## SCREENSHOTS
 
-### Dashboard overview
+| **Login**                                                            | **Dashboard overview**                                                            |
+| -------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| ![Login](nakivo_reseller_portal/static/description/screenshot_4.png) | ![Dashboard overview](nakivo_reseller_portal/static/description/screenshot_1.png) |
 
-![Dashboard overview](nakivo_reseller_portal/static/description/screenshot_1.png)
-
-### Opportunities list
-
-![Opportunities list](nakivo_reseller_portal/static/description/screenshot_2.png)
-
-### Create opportunity modal
-
-![Create opportunity modal](nakivo_reseller_portal/static/description/screenshot_3.png)
+| **Opportunities list**                                                            | **Create opportunity modal**                                                            |
+| --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| ![Opportunities list](nakivo_reseller_portal/static/description/screenshot_2.png) | ![Create opportunity modal](nakivo_reseller_portal/static/description/screenshot_3.png) |
 
 ## PROPOSE DESIGN
 
-| Design             | Screenshot                                                                | Final Choice    |
-| ------------------ | ------------------------------------------------------------------------- | --------------- |
-| `clean-signal-455` | ![clean-signal-455](design/clean-signal-455/screenshots/home-desktop.png) | ✅ Final choice |
-| `frost-grid-345`   | ![frost-grid-345](design/frost-grid-345/screenshots/home-desktop.png)     | -               |
-| `mono-capsule-764` | ![mono-capsule-764](design/mono-capsule-764/screenshots/home-desktop.png) | -               |
-| `onyx-signal-768`  | ![onyx-signal-768](design/onyx-signal-768/screenshots/home-desktop.png)   | -               |
-| `raw-terminal-787` | ![raw-terminal-787](design/raw-terminal-787/screenshots/home-desktop.png) | -               |
+|                                                                                                                     |                                                                                                  |
+| ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| **`clean-signal-455`** ✅ Final choice<br>![clean-signal-455](design/clean-signal-455/screenshots/home-desktop.png) | **`frost-grid-345`**<br>![frost-grid-345](design/frost-grid-345/screenshots/home-desktop.png)    |
+| **`mono-capsule-764`**<br>![mono-capsule-764](design/mono-capsule-764/screenshots/home-desktop.png)                 | **`onyx-signal-768`**<br>![onyx-signal-768](design/onyx-signal-768/screenshots/home-desktop.png) |
+| **`raw-terminal-787`**<br>![raw-terminal-787](design/raw-terminal-787/screenshots/home-desktop.png)                 |                                                                                                  |
 
 ## Design decisions
 
@@ -226,6 +220,56 @@ docker compose run --rm odoo odoo \
 | Longpolling     | port `8072`                         |
 | Debug (debugpy) | port `5678` (debug compose variant) |
 
+## Frontend
+
+The React SPA lives in `frontend/` and is built into a single self-contained HTML file at
+`nakivo_reseller_portal/static/react/index.html` via
+[`vite-plugin-singlefile`](https://github.com/richardtallent/vite-plugin-singlefile).
+The built file is committed to the repo, so **no Node.js toolchain is required to run the module**.
+
+### Option 1 — Use the pre-built artifact (no Node.js needed)
+
+The file `nakivo_reseller_portal/static/react/index.html` is tracked in git and served directly by
+Odoo. Install the addons and open `/my/reseller-portal` — the SPA loads without any frontend build
+step.
+
+### Option 2 — Vite dev server (HMR, fastest iteration)
+
+Run the Vite dev server alongside the Odoo container. The dev server proxies `/api` and `/web`
+requests to Odoo at `http://localhost:8069`.
+
+```bash
+# Prerequisites: Node.js 18+ and npm
+cd frontend
+npm install
+npm run dev
+```
+
+The dev server starts at **`http://localhost:5173`**. Open that URL in the browser. Log in via
+Odoo (the SPA reads the Odoo session), then navigate the portal with hot module replacement active.
+
+> Odoo must already be running on port 8069 (`docker compose up -d` from `docker/`).
+
+### Option 3 — Build and embed into Odoo
+
+Rebuild `index.html` after making changes to `frontend/src/`:
+
+```bash
+cd frontend
+npm install        # only needed once, or after package changes
+npm run build
+```
+
+The build command runs `tsc && vite build` and writes the output directly to
+`nakivo_reseller_portal/static/react/index.html`. Odoo picks it up immediately — no restart needed
+(the file is served as a static asset).
+
+| Method             | Node.js required | HMR | URL                                        |
+| ------------------ | ---------------- | --- | ------------------------------------------ |
+| Pre-built artifact | No               | No  | `http://localhost:8069/my/reseller-portal` |
+| Vite dev server    | Yes              | Yes | `http://localhost:5173`                    |
+| Build + embed      | Yes              | No  | `http://localhost:8069/my/reseller-portal` |
+
 ## Use cases / context
 
 This module provides the data isolation layer and self-service frontend for reseller partners. A reseller signs into Odoo, opens the embedded React SPA, and sees a dashboard scoped strictly to their own data, with no access to other resellers' opportunities, orders, invoices, or customers.
@@ -235,6 +279,35 @@ Typical scenarios:
 - A reseller logs in and reviews their open opportunities and expected revenue.
 - A reseller creates a new opportunity directly from the portal without contacting the internal sales team.
 - A reseller monitors the status of their linked customers' invoices and sales orders.
+
+## Demo account
+
+When the addons are installed **with demo data** (the Odoo installer "Load demo data" checkbox, or
+`--load-language` + demo flag), a ready-to-use reseller account and sample records are seeded:
+
+| Field      | Value                                      |
+| ---------- | ------------------------------------------ |
+| Login      | `reseller@demo.com`                        |
+| Password   | `demo1234`                                 |
+| Portal URL | `http://localhost:8069/my/reseller-portal` |
+
+The seed includes:
+
+- 4 customer partners linked to the demo reseller
+- 5 opportunities across different CRM stages
+- 2 quotations (draft) + 1 confirmed sale order
+- 2 invoices (1 draft, 1 posted/paid)
+
+To reinstall with demo data enabled:
+
+```bash
+docker compose run --rm odoo odoo \
+    --config=/etc/odoo/odoo.conf \
+    -d nakivo_crm_demo \
+    -i nakivo_base_rest,nakivo_reseller_portal \
+    --without-demo=False \
+    --stop-after-init
+```
 
 ## Configure
 
@@ -344,8 +417,7 @@ The addon-level `README.rst` files are auto-generated following OCA conventions.
 
 ## Contributors
 
-- Don Hat — <donhat.hn@gmail.com>
-
 ```
+- Do Nhat — <donhat.hn@gmail.com>
 
 ```

@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+        <!-- ─── Reseller partner ──────────────────────────────────────────── -->
+
+        <record id="demo_reseller_partner" model="res.partner">
+            <field name="name">NAKIVO Demo Reseller</field>
+            <field name="email">reseller@demo.com</field>
+            <field name="phone">+1 (312) 847-1928</field>
+            <field name="is_reseller">True</field>
+            <field name="customer_rank">0</field>
+        </record>
+
+        <!-- Portal user is created via post_init_hook (see hooks.py) -->
+
+        <!-- ─── Customers ─────────────────────────────────────────────────── -->
+
+        <record id="demo_customer_vantage" model="res.partner">
+            <field name="name">Vantage North Ltd</field>
+            <field name="email">contact@vantage-north.com</field>
+            <field name="phone">+1 (415) 237-5091</field>
+            <field name="city">San Francisco</field>
+            <field name="country_id" ref="base.us"/>
+            <field name="reseller_partner_id" ref="demo_reseller_partner"/>
+            <field name="customer_rank">1</field>
+        </record>
+
+        <record id="demo_customer_arctic" model="res.partner">
+            <field name="name">Arctic Systems GmbH</field>
+            <field name="email">office@arctic-sys.de</field>
+            <field name="phone">+49 30 1827 4630</field>
+            <field name="city">Berlin</field>
+            <field name="country_id" ref="base.de"/>
+            <field name="reseller_partner_id" ref="demo_reseller_partner"/>
+            <field name="customer_rank">1</field>
+        </record>
+
+        <record id="demo_customer_meridian" model="res.partner">
+            <field name="name">Meridian Cloud Corp</field>
+            <field name="email">hello@meridiancloud.io</field>
+            <field name="phone">+1 (646) 503-8812</field>
+            <field name="city">New York</field>
+            <field name="country_id" ref="base.us"/>
+            <field name="reseller_partner_id" ref="demo_reseller_partner"/>
+            <field name="customer_rank">1</field>
+        </record>
+
+        <record id="demo_customer_polaris" model="res.partner">
+            <field name="name">Polaris Data Solutions</field>
+            <field name="email">info@polarisdata.ca</field>
+            <field name="phone">+1 (604) 391-7748</field>
+            <field name="city">Vancouver</field>
+            <field name="country_id" ref="base.ca"/>
+            <field name="reseller_partner_id" ref="demo_reseller_partner"/>
+            <field name="customer_rank">1</field>
+        </record>
+
+        <!-- ─── Service product ───────────────────────────────────────────── -->
+
+        <record id="demo_product" model="product.product">
+            <field name="name">NAKIVO Backup &amp; Replication License</field>
+            <field name="type">service</field>
+            <field name="list_price">2500.00</field>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">False</field>
+        </record>
+
+        <!-- ─── Opportunities ─────────────────────────────────────────────── -->
+
+        <record id="demo_opp_renewal_vantage" model="crm.lead">
+            <field name="name">Renewal Q3 — Vantage North</field>
+            <field name="type">opportunity</field>
+            <field name="partner_id" ref="demo_customer_vantage"/>
+            <field name="reseller_partner_id" ref="demo_reseller_partner"/>
+            <field name="expected_revenue">12500</field>
+            <field name="probability">75</field>
+            <field name="date_deadline">2026-07-31</field>
+            <field name="stage_id" ref="crm.stage_lead3"/>
+        </record>
+
+        <record id="demo_opp_deploy_arctic" model="crm.lead">
+            <field name="name">New Deployment — Arctic Systems</field>
+            <field name="type">opportunity</field>
+            <field name="partner_id" ref="demo_customer_arctic"/>
+            <field name="reseller_partner_id" ref="demo_reseller_partner"/>
+            <field name="expected_revenue">31000</field>
+            <field name="probability">45</field>
+            <field name="date_deadline">2026-08-15</field>
+            <field name="stage_id" ref="crm.stage_lead2"/>
+        </record>
+
+        <record id="demo_opp_bundle_meridian" model="crm.lead">
+            <field name="name">MSP Bundle — Meridian Cloud</field>
+            <field name="type">opportunity</field>
+            <field name="partner_id" ref="demo_customer_meridian"/>
+            <field name="reseller_partner_id" ref="demo_reseller_partner"/>
+            <field name="expected_revenue">8750</field>
+            <field name="probability">60</field>
+            <field name="date_deadline">2026-06-30</field>
+            <field name="stage_id" ref="crm.stage_lead3"/>
+        </record>
+
+        <record id="demo_opp_starter_polaris" model="crm.lead">
+            <field name="name">SMB Starter — Polaris Data</field>
+            <field name="type">opportunity</field>
+            <field name="partner_id" ref="demo_customer_polaris"/>
+            <field name="reseller_partner_id" ref="demo_reseller_partner"/>
+            <field name="expected_revenue">4200</field>
+            <field name="probability">20</field>
+            <field name="date_deadline">2026-09-30</field>
+            <field name="stage_id" ref="crm.stage_lead1"/>
+        </record>
+
+        <record id="demo_opp_upsell_vantage" model="crm.lead">
+            <field name="name">Enterprise Upsell — Vantage North</field>
+            <field name="type">opportunity</field>
+            <field name="partner_id" ref="demo_customer_vantage"/>
+            <field name="reseller_partner_id" ref="demo_reseller_partner"/>
+            <field name="expected_revenue">19800</field>
+            <field name="probability">90</field>
+            <field name="date_deadline">2026-05-31</field>
+            <field name="stage_id" ref="crm.stage_lead3"/>
+        </record>
+
+        <!-- ─── Sale orders ───────────────────────────────────────────────── -->
+
+        <!-- Quotation 1 — draft -->
+        <record id="demo_so_q1" model="sale.order">
+            <field name="partner_id" ref="demo_customer_vantage"/>
+            <field name="reseller_partner_id" ref="demo_reseller_partner"/>
+            <field name="date_order">2026-04-10 09:00:00</field>
+            <field name="order_line" eval="[
+                (0, 0, {
+                    'name': 'NAKIVO Backup &amp; Replication License',
+                    'product_id': ref('nakivo_reseller_portal.demo_product'),
+                    'product_uom_qty': 5,
+                    'price_unit': 2500.00,
+                }),
+            ]"/>
+        </record>
+
+        <!-- Quotation 2 — draft -->
+        <record id="demo_so_q2" model="sale.order">
+            <field name="partner_id" ref="demo_customer_polaris"/>
+            <field name="reseller_partner_id" ref="demo_reseller_partner"/>
+            <field name="date_order">2026-04-22 14:30:00</field>
+            <field name="order_line" eval="[
+                (0, 0, {
+                    'name': 'NAKIVO Backup &amp; Replication License',
+                    'product_id': ref('nakivo_reseller_portal.demo_product'),
+                    'product_uom_qty': 2,
+                    'price_unit': 2500.00,
+                }),
+            ]"/>
+        </record>
+
+        <!-- Confirmed sale order -->
+        <record id="demo_so_confirmed" model="sale.order">
+            <field name="partner_id" ref="demo_customer_meridian"/>
+            <field name="reseller_partner_id" ref="demo_reseller_partner"/>
+            <field name="date_order">2026-03-18 11:00:00</field>
+            <field name="order_line" eval="[
+                (0, 0, {
+                    'name': 'NAKIVO Backup &amp; Replication License',
+                    'product_id': ref('nakivo_reseller_portal.demo_product'),
+                    'product_uom_qty': 8,
+                    'price_unit': 2500.00,
+                }),
+            ]"/>
+        </record>
+
+        <function model="sale.order" name="action_confirm">
+            <value model="sale.order" search="[('id', '=', ref('nakivo_reseller_portal.demo_so_confirmed'))]"/>
+        </function>
+
+        <!-- ─── Invoices ──────────────────────────────────────────────────── -->
+
+        <!-- Invoice 1 — draft, created via function so account_id is auto-resolved -->
+        <function model="account.move" name="create">
+            <value eval="[{
+                'move_type': 'out_invoice',
+                'partner_id': ref('nakivo_reseller_portal.demo_customer_vantage'),
+                'reseller_partner_id': ref('nakivo_reseller_portal.demo_reseller_partner'),
+                'invoice_date': '2026-03-01',
+                'invoice_line_ids': [(0, 0, {
+                    'product_id': ref('nakivo_reseller_portal.demo_product'),
+                    'quantity': 5,
+                    'price_unit': 2500.00,
+                })],
+            }]"/>
+        </function>
+
+        <!-- Invoice 2 — posted -->
+        <function model="account.move" name="create">
+            <value eval="[{
+                'move_type': 'out_invoice',
+                'partner_id': ref('nakivo_reseller_portal.demo_customer_arctic'),
+                'reseller_partner_id': ref('nakivo_reseller_portal.demo_reseller_partner'),
+                'invoice_date': '2026-02-14',
+                'invoice_line_ids': [(0, 0, {
+                    'product_id': ref('nakivo_reseller_portal.demo_product'),
+                    'quantity': 3,
+                    'price_unit': 2500.00,
+                })],
+            }]"/>
+        </function>
+
+        <function model="account.move" name="action_post">
+            <value model="account.move" search="[
+                ('partner_id', '=', ref('nakivo_reseller_portal.demo_customer_arctic')),
+                ('move_type', '=', 'out_invoice'),
+            ]"/>
+        </function>
+
+</odoo>

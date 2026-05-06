@@ -15,6 +15,9 @@
         "sale_management",
         "account",
     ],
+    "demo": [
+        "data/demo_reseller.xml",
+    ],
     "data": [
         "security/nakivo_reseller_portal_groups.xml",
         "security/ir.model.access.csv",
@@ -49,4 +52,5 @@
     },
     "installable": True,
     "application": True,
+    "post_init_hook": "post_init_hook",
 }

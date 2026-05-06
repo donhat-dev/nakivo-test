@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 
 from odoo import _
 from odoo.exceptions import AccessError
@@ -24,6 +25,49 @@ from ..schemas import CreateOpportunityPayload
 
 
 class PartnerResellerPortalController(CustomerPortal, BaseRestHandler):
+    @route(
+        f"{PORTAL_PAGE_ROUTE}/login",
+        type="http",
+        auth="public",
+        website=True,
+        sitemap=False,
+        readonly=True,
+    )
+    def reseller_portal_login_entry(self, **kwargs):
+        user = request.env.user
+        if (
+            not user._is_public()
+            and user.has_group(RESELLER_PORTAL_GROUP_XML_ID)
+            and user.partner_id
+        ):
+            return request.redirect(PORTAL_PAGE_ROUTE)
+
+        # Serve the React SPA for unauthenticated users so they see the
+        # SPA's own login page instead of being redirected to Odoo web login.
+        addon_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        html_path = os.path.join(addon_root, "static", "react", "index.html")
+
+        try:
+            with open(html_path, encoding="utf-8") as f:
+                html = f.read()
+        except FileNotFoundError:
+            return request.redirect(
+                f"/web/login?redirect={PORTAL_PAGE_ROUTE}&reseller_portal_login=1"
+            )
+
+        # Inject null session so the SPA knows no user is authenticated yet.
+        session_script = "<script>window.__ODOO_SESSION__ = null;</script>"
+        html = html.replace("</head>", f"{session_script}</head>", 1)
+
+        return request.make_response(
+            html,
+            headers=[
+                ("Content-Type", "text/html; charset=utf-8"),
+                ("X-Frame-Options", "SAMEORIGIN"),
+                ("Cache-Control", "no-store"),
+            ],
+        )
+
     def _ensure_portal_page_access(self):
         user = request.env.user
         if not user.has_group(RESELLER_PORTAL_GROUP_XML_ID) or not user.partner_id:
@@ -144,6 +188,9 @@ class PartnerResellerPortalController(CustomerPortal, BaseRestHandler):
             payload.model_dump(exclude_none=True),
             reseller_partner,
         )
+        # crm.lead uses email_from, not email
+        if "email" in values:
+            values["email_from"] = values.pop("email")
 
         if payload.partner_id:
             customer = customer_model.search(
@@ -186,21 +233,41 @@ class PartnerResellerPortalController(CustomerPortal, BaseRestHandler):
     )
     def reseller_portal_page(self, **kwargs):
         self._ensure_portal_page_access()
-        values = self._prepare_portal_layout_values()
-        values.update(
+
+        addon_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        html_path = os.path.join(addon_root, "static", "react", "index.html")
+
+        try:
+            with open(html_path, encoding="utf-8") as f:
+                html = f.read()
+        except FileNotFoundError:
+            return request.make_response(
+                "<h1>Portal not available</h1>"
+                "<p>React SPA not built. "
+                "Run <code>cd frontend &amp;&amp; npm run build</code>.</p>",
+                headers=[("Content-Type", "text/html; charset=utf-8")],
+            )
+
+        # Inject Odoo session info so the React SPA can skip its own login page.
+        # The SPA reads window.__ODOO_SESSION__ in App.tsx before the first render.
+        user = request.env.user
+        session_data = json.dumps(
             {
-                "page_name": "nakivo_reseller_portal",
-                "component_props_json": json.dumps(
-                    {
-                        "apiBasePath": API_BASE_PATH,
-                        "csrfToken": request.csrf_token(),
-                        "userName": request.env.user.name,
-                    }
-                ),
+                "session_id": request.session.sid,
+                "uid": user.id,
+                "name": user.name,
             }
         )
-        return request.render(
-            "nakivo_reseller_portal.portal_my_reseller_portal", values
+        session_script = f"<script>window.__ODOO_SESSION__={session_data};</script>"
+        html = html.replace("</head>", f"{session_script}</head>", 1)
+
+        return request.make_response(
+            html,
+            headers=[
+                ("Content-Type", "text/html; charset=utf-8"),
+                ("X-Frame-Options", "SAMEORIGIN"),
+                ("Cache-Control", "no-store"),
+            ],
         )
 
     @route(
@@ -234,6 +301,7 @@ class PartnerResellerPortalController(CustomerPortal, BaseRestHandler):
         auth="user",
         website=True,
         sitemap=False,
+        csrf=False,
     )
     def reseller_portal_opportunity_create(self, **kwargs):
         return self._dispatch_api(self._create_opportunity_payload)
@@ -245,6 +313,7 @@ class PartnerResellerPortalController(CustomerPortal, BaseRestHandler):
         auth="user",
         website=True,
         sitemap=False,
+        csrf=False,
     )
     def reseller_portal_opportunity_detail(self, opportunity_id: int, **kwargs):
         return self._dispatch_api(

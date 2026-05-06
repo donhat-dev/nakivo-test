@@ -1,0 +1,228 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+    --primary: 225 100% 50%;
+    --accent: 168 70% 42%;
+    --surface: 220 14% 96%;
+    --border: 220 13% 91%;
+    --radius: 0px;
+    font-family: "Space Grotesk", system-ui, sans-serif;
+    color: #101827;
+    background: #ffffff;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-width: 320px;
+    min-height: 100dvh;
+    margin: 0;
+}
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+::selection {
+    color: #ffffff;
+    background: #004cff;
+}
+
+/* Subtle grid noise overlay — apply as fixed bg behind content */
+.signal-noise {
+    background-image: linear-gradient(
+            rgba(16, 24, 39, 0.035) 1px,
+            transparent 1px
+        ),
+        linear-gradient(90deg, rgba(16, 24, 39, 0.035) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.85),
+        transparent 72%
+    );
+}
+
+/* GSAP entrance fallback: content stays readable if JS animation is interrupted. */
+.reveal {
+    opacity: 1;
+    transform: none;
+    filter: none;
+}
+
+/* Card container pattern */
+.bezel {
+    border-radius: 0;
+    border: 1px solid #e4e8ef;
+    background: rgba(16, 24, 39, 0.045);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.9),
+        0 28px 70px -46px rgba(0, 76, 255, 0.45);
+    transition:
+        box-shadow 0.55s cubic-bezier(0.32, 0.72, 0, 1),
+        border-color 0.55s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.bezel:hover {
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.9),
+        0 38px 90px -40px rgba(0, 76, 255, 0.6);
+    border-color: rgba(0, 76, 255, 0.22);
+}
+
+.bezel-core {
+    border-radius: 0;
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.95);
+}
+
+/* Animated marquee band */
+.signal-marquee {
+    animation: signal-marquee 26s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+}
+
+/* Green scan sweep — apply on panels that should feel "live" */
+.scanline {
+    position: relative;
+    overflow: hidden;
+}
+
+.scanline::after {
+    position: absolute;
+    inset: 0;
+    content: "";
+    background: linear-gradient(
+        110deg,
+        transparent 0%,
+        transparent 35%,
+        rgba(33, 183, 153, 0.16) 48%,
+        transparent 60%,
+        transparent 100%
+    );
+    transform: translate3d(-120%, 0, 0);
+    animation: scanline 3.8s cubic-bezier(0.32, 0.72, 0, 1) infinite;
+    pointer-events: none;
+}
+
+/* Scroll-scrubbed word reveal — initial dim state */
+.signal-word {
+    opacity: 0.18;
+}
+
+@keyframes signal-marquee {
+    from {
+        transform: translate3d(0, 0, 0);
+    }
+    to {
+        transform: translate3d(-50%, 0, 0);
+    }
+}
+
+@keyframes scanline {
+    0% {
+        transform: translate3d(-120%, 0, 0);
+    }
+    52%,
+    100% {
+        transform: translate3d(120%, 0, 0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .reveal {
+        opacity: 1;
+        transform: none;
+        filter: none;
+    }
+}
+
+/* Table row hover — left accent on first cell */
+tbody tr td:first-child {
+    position: relative;
+}
+
+tbody tr td:first-child::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #004cff;
+    transform: scaleY(0);
+    transform-origin: center;
+    transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+tbody tr:hover td:first-child::before {
+    transform: scaleY(1);
+}
+
+/* Stat number pop on countUp finish */
+@keyframes stat-arrive {
+    0% {
+        transform: scale(0.94);
+    }
+    60% {
+        transform: scale(1.04);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.stat-arrive {
+    animation: stat-arrive 0.5s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+/* Page-level fade-in — CSS fallback when GSAP is unavailable */
+@keyframes page-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.page-enter {
+    animation: page-fade-in 0.52s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
