@@ -23346,13 +23346,11 @@ Error generating stack: ` +
             this.#t.setOptions(this.options),
             t._defaulted &&
               !Bu(this.options, t) &&
-              this.#e
-                .getQueryCache()
-                .notify({
-                  type: `observerOptionsUpdated`,
-                  query: this.#t,
-                  observer: this,
-                });
+              this.#e.getQueryCache().notify({
+                type: `observerOptionsUpdated`,
+                query: this.#t,
+                observer: this,
+              });
           let r = this.hasListeners();
           r && bd(this.#t, n, this.options, t) && this.#h(),
             this.updateResult(),
@@ -23990,13 +23988,11 @@ Error generating stack: ` +
             let t = this.options;
             (this.options = this.#e.defaultMutationOptions(e)),
               Bu(this.options, t) ||
-                this.#e
-                  .getMutationCache()
-                  .notify({
-                    type: `observerOptionsUpdated`,
-                    mutation: this.#n,
-                    observer: this,
-                  }),
+                this.#e.getMutationCache().notify({
+                  type: `observerOptionsUpdated`,
+                  mutation: this.#n,
+                  observer: this,
+                }),
               t?.mutationKey &&
               this.options.mutationKey &&
               Iu(t.mutationKey) !== Iu(this.options.mutationKey)
