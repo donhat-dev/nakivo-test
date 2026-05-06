@@ -1,20 +1,20 @@
 # Partner Reseller Portal for Odoo 19
 
-Authenticated reseller portal built on **Odoo 19 Community Edition** with an Odoo-native stack:
+Authenticated reseller portal built on **Odoo 19 Community Edition** with a React SPA frontend embedded into the Odoo portal route:
 
-- Odoo portal page for authenticated access
-- Owl frontend for the reseller dashboard UI
+- React SPA authored in `frontend/` and served at `/my/reseller-portal`
+- Odoo backend providing session-authenticated API endpoints
 - REST-style HTTP JSON endpoints for portal reads and actions
 - strict backend-enforced reseller data isolation
 
 ## Description
 
-Authenticated reseller portal built on Odoo 19 Community Edition with an Odoo-native stack.
+Authenticated reseller portal built on Odoo 19 Community Edition with React SPA as the final frontend decision.
 
 **Features:**
 
-- Portal page at `/my/reseller-portal` — accessible to reseller portal users only
-- Owl SPA dashboard exposing opportunities, quotations, sales orders, invoices, and customers
+- React SPA at `/my/reseller-portal` for reseller dashboard workflows
+- Dashboard pages for opportunities, quotations, sales orders, invoices, and customers
 - Authenticated JSON endpoints to list, create, and delete reseller-owned opportunities
 - Backend-enforced data isolation — scope is derived from the session, never from client payloads
 - `nakivo_base_rest` — reusable REST primitives (Pydantic validation, error envelopes, exception mapping) decoupled from reseller-specific logic
@@ -33,40 +33,51 @@ Authenticated reseller portal built on Odoo 19 Community Edition with an Odoo-na
 
 ![Create opportunity modal](nakivo_reseller_portal/static/description/screenshot_3.png)
 
+## PROPOSE DESIGN
+
+| Design             | Screenshot                                                                | Final Choice    |
+| ------------------ | ------------------------------------------------------------------------- | --------------- |
+| `clean-signal-455` | ![clean-signal-455](design/clean-signal-455/screenshots/home-desktop.png) | ✅ Final choice |
+| `frost-grid-345`   | ![frost-grid-345](design/frost-grid-345/screenshots/home-desktop.png)     | -               |
+| `mono-capsule-764` | ![mono-capsule-764](design/mono-capsule-764/screenshots/home-desktop.png) | -               |
+| `onyx-signal-768`  | ![onyx-signal-768](design/onyx-signal-768/screenshots/home-desktop.png)   | -               |
+| `raw-terminal-787` | ![raw-terminal-787](design/raw-terminal-787/screenshots/home-desktop.png) | -               |
+
 ## Design decisions
 
 Key architectural choices are documented in [`DECISIONS.md`](DECISIONS.md). A short summary:
 
-| Decision           | Choice                                            | Rationale                                                                                        |
-| ------------------ | ------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| Frontend framework | Owl SPA inside Odoo portal shell                  | Reuses Odoo session auth, CSRF, and asset pipeline — no separate frontend server needed          |
-| Backend API style  | `type='http'` routes returning JSON               | Keeps CSRF handling standard and avoids jsonrpc overhead for simple REST semantics               |
-| Data isolation     | Scope resolved from `request.env.user.partner_id` | Client-supplied identifiers are never trusted; server is the single trust boundary               |
-| Addon split        | `nakivo_base_rest` + `nakivo_reseller_portal`     | Generic REST primitives are reusable across addons; domain logic stays isolated                  |
-| UI reference       | Softr Partner Portal template                     | Establishes familiar B2B portal UX patterns (collapsible sidebar, toolbar + table, create modal) |
-| Create form        | Modal overlay, not a dedicated route              | Short form — modal keeps the user in the list context; revisit if the form grows beyond 8 fields |
+| Decision           | Choice                                                  | Rationale                                                                                        |
+| ------------------ | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Frontend framework | React SPA built from `frontend/` and embedded into Odoo | Keeps modern SPA UX while reusing Odoo auth, routing guard, and deployment surface               |
+| Backend API style  | `type='http'` routes returning JSON                     | Keeps CSRF handling standard and avoids jsonrpc overhead for simple REST semantics               |
+| Data isolation     | Scope resolved from `request.env.user.partner_id`       | Client-supplied identifiers are never trusted; server is the single trust boundary               |
+| Addon split        | `nakivo_base_rest` + `nakivo_reseller_portal`           | Generic REST primitives are reusable across addons; domain logic stays isolated                  |
+| UI reference       | Softr Partner Portal template                           | Establishes familiar B2B portal UX patterns (collapsible sidebar, toolbar + table, create modal) |
+| Create form        | Modal overlay, not a dedicated route                    | Short form — modal keeps the user in the list context; revisit if the form grows beyond 8 fields |
 
 See [`DECISIONS.md`](DECISIONS.md) for the full rationale behind each decision.
 
 ## Overview
 
-This repository is currently organized around two related addons:
+This repository is currently organized around two related addons plus one frontend workspace:
 
 - `nakivo_base_rest/` — reusable Pydantic-first REST primitives for Odoo addons
-- `nakivo_reseller_portal/` — reseller-specific portal UI, business logic, and API endpoints
+- `nakivo_reseller_portal/` — reseller-specific business logic, portal integration, and API endpoints
+- `frontend/` — React SPA source workspace for the reviewer-facing reseller portal
 
 The implementation follows a deliberately simple architecture:
 
 ```text
 Portal user login
 	↓
-Open /my/reseller-portal
+Open /my or /my/reseller-portal
 	↓
-Odoo renders the page shell
+Odoo serves the built React SPA from nakivo_reseller_portal/static/react/index.html
 	↓
-Owl app mounts in the portal content area
+SPA loads reseller-scoped data from /api/v1/partner-portal/*
 	↓
-Frontend calls authenticated JSON endpoints
+User navigates client-side across dashboard sections
 	↓
 Backend resolves reseller from the session and enforces ownership
 ```
@@ -81,6 +92,7 @@ nakivo-test/
 ├── nakivo_base_rest/            # shared REST foundation addon
 ├── docs/                        # project conventions, API, security, design notes
 ├── nakivo_reseller_portal/      # reseller portal addon
+├── frontend/                    # React SPA source workspace
 ├── .editorconfig
 ├── .pre-commit-config.yaml
 ├── .pylintrc
@@ -107,11 +119,10 @@ Provides shared API primitives:
 
 Implements the reseller-facing flow:
 
-- portal page at `/my/reseller-portal`
 - reseller-scoped dashboard data
 - reseller-scoped opportunity creation
 - reseller-scoped opportunity deletion
-- Owl frontend assets loaded in `web.assets_frontend`
+- Odoo portal delivery route plus the API consumed by the React SPA
 
 ## API contract highlights
 
@@ -147,7 +158,7 @@ See `docs/security.md` for the threat model and forbidden patterns.
 
 - `AGENTS.md` — root instructions for coding agents working in this repo
 - `docs/conventions.md` — architecture and implementation rules
-- `docs/design.md` — frontend visual contract for agent-generated UI
+- `DESIGN.md` — frontend visual contract for agent-generated UI
 - `docs/api.md` — endpoint and payload design
 - `docs/security.md` — security boundaries and data-isolation rules
 - `docs/ai-usage.md` — AI usage notes for the assignment
@@ -217,7 +228,7 @@ docker compose run --rm odoo odoo \
 
 ## Use cases / context
 
-This module provides the data isolation layer and self-service portal for reseller partners. A reseller can log into the standard Odoo portal and access a dashboard scoped strictly to their own data — no access to other resellers' opportunities, orders, invoices, or customers — without requiring a full Odoo internal user license.
+This module provides the data isolation layer and self-service frontend for reseller partners. A reseller signs into Odoo, opens the embedded React SPA, and sees a dashboard scoped strictly to their own data, with no access to other resellers' opportunities, orders, invoices, or customers.
 
 Typical scenarios:
 
@@ -243,15 +254,15 @@ Set the **Reseller Partner** field on the relevant `crm.lead`, `sale.order`, `ac
 
 ### 4. Verify access
 
-Log in with the reseller portal user and navigate to `/my/reseller-portal`. The Owl dashboard should load showing only the reseller's own data.
+Sign in to Odoo with the reseller portal user, open `/my/reseller-portal`, and verify that the React dashboard loads only that reseller's own data.
 
 ## Usage
 
 ### Basic flow
 
 1. Log in as a **Reseller Portal User**.
-2. Navigate to `/my` — the **Reseller Dashboard** tile appears on the portal home page.
-3. Click the tile (or go directly to `/my/reseller-portal`) to open the Owl SPA dashboard.
+2. Navigate to `/my` or open `/my/reseller-portal`.
+3. Enter the React SPA dashboard served by Odoo.
 
 ### Dashboard
 

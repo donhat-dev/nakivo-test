@@ -127,11 +127,14 @@ Recommended split:
 All routes described here are intended to run behind authenticated Odoo sessions.
 The acting reseller scope is derived from the logged-in user, not from the client payload.
 
-## Page route
+## Frontend entrypoints
 
-| Route                 | Purpose                                                     |
-| --------------------- | ----------------------------------------------------------- |
-| `/my/reseller-portal` | Render the reseller portal shell and mount the Owl frontend |
+The primary frontend is the React SPA rendered by Odoo at the reseller portal route.
+
+| Route / URL           | Purpose                                                                    |
+| --------------------- | -------------------------------------------------------------------------- |
+| `/my/reseller-portal` | React SPA dashboard shell after Odoo authentication                        |
+| `/my`                 | Portal home route that redirects reseller users into `/my/reseller-portal` |
 
 ## Authenticated data/action endpoints
 

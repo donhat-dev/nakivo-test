@@ -15,10 +15,11 @@ Scoped file-level instructions live in `.github/instructions/`.
 
 ## Addons
 
-This repo contains two Odoo 19 Community addons:
+This repo contains two Odoo 19 Community addons plus one frontend workspace:
 
 - **`nakivo_base_rest/`** — generic REST primitives: request parsing, Pydantic validation, response envelopes, centralized exception mapping, and semantic error codes. Nothing reseller-specific lives here.
-- **`nakivo_reseller_portal/`** — reseller portal: Owl frontend, controllers, models, security rules, and domain-specific error codes.
+- **`nakivo_reseller_portal/`** — reseller portal backend and React delivery route: controllers, models, security rules, and domain-specific error codes.
+- **`frontend/`** — reviewer-facing React SPA source that is built into the Odoo route.
 
 Keep the boundary strict: generic HTTP/validation primitives belong in `nakivo_base_rest`; domain semantics belong in `nakivo_reseller_portal`.
 
@@ -27,13 +28,11 @@ Keep the boundary strict: generic HTTP/validation primitives belong in `nakivo_b
 ```
 Portal user login
     ↓
-GET /my  (portal home — reseller dashboard shortcut tile via _prepare_home_portal_values)
+GET /my or /my/reseller-portal
     ↓
-GET /my/reseller-portal  (Odoo portal page, type='http')
+Odoo returns the built React SPA HTML from `nakivo_reseller_portal/static/react/index.html`
     ↓
-Odoo renders page shell → Owl SPA mounts
-    ↓
-Frontend calls authenticated JSON endpoints (type='http', not jsonrpc)
+SPA calls authenticated JSON endpoints (`type='http'`, not `jsonrpc`)
     ↓
 Backend derives reseller from session → enforces ownership → returns envelope
 ```

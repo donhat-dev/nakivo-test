@@ -34,18 +34,18 @@ The Softr partner portal (branded as "Mesh | PARTNERS") demonstrates a well-esta
 
 ---
 
-## Option A: Odoo-native Portal + Owl (not React/Vue)
+## Option A: React SPA in Odoo (final)
 
-**Decision:** Build the frontend as an Owl SPA inside Odoo's standard portal shell, not as a separate React or Vue application.
+**Decision:** Build the reviewer-facing frontend in React, with the SPA authored in `frontend/` and embedded into the Odoo route `/my/reseller-portal`.
 
 **Rationale:**
 
-- Reuses Odoo session auth, CSRF, and asset pipeline — no separate auth layer needed
-- Keeps deployment as a single addon install; no separate frontend server
-- Owl is Odoo 17+ standard; components integrate directly with QWeb templates
-- The portal page (`/my/reseller-portal`) is just a QWeb shell that mounts the Owl root component
+- Keeps the frontend experience in React rather than continuing with Owl as the primary UI
+- Preserves Odoo as the trust boundary by reusing `/web/session/authenticate` plus session cookies
+- Gives the frontend a clearer routing, state-management, and component model for reviewer-facing UX
+- Fits the deployed stack by baking the built SPA into the Odoo addon image and route
 
-**Trade-off accepted:** Owl has a smaller ecosystem than React/Vue, but correctness and integration simplicity outweigh ecosystem richness for a 3-day scope.
+**Trade-off accepted:** This adds a frontend build step, but the UX and implementation path are clearer than maintaining the primary experience inside Owl.
 
 ---
 
@@ -85,4 +85,4 @@ The Softr partner portal (branded as "Mesh | PARTNERS") demonstrates a well-esta
 
 **Decision:** The Phone field in the create form includes a country-code dropdown prefix (defaulting to VN).
 
-**Rationale:** Directly observed in the reference UI ("VN ∨" prefix on the phone input). Necessary for international resellers. Implementation delegates to an Owl sub-component wrapping a country list.
+**Rationale:** Directly observed in the reference UI ("VN ∨" prefix on the phone input). Necessary for international resellers. Implementation delegates to a dedicated React field composition around a country list.
